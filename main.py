@@ -65,7 +65,7 @@ def find_rhymes(
     """
     try:
         response = ai_client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.6-flash',
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )
