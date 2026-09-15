@@ -36,8 +36,13 @@ def extract_json_data(text: str):
                 pass
     return None
 
+# 1. API: Einzelne Reimwörter mit optionalem Thema
 @app.get("/api/rhyme")
-def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
+def find_rhymes(
+    word: str = Query(..., min_length=1),
+    theme: Optional[str] = Query(None),
+    lang: str = Query("de")
+):
     if not ai_client:
         return {"error": "API-Schlüssel fehlt.", "categories": {}}
 
@@ -45,16 +50,22 @@ def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
     prompt = f"""
     Finde hochwertige Reime auf das Wort '{word}' in der Sprache: {language_name}.
     Kategorisiere in: "exact", "near", "multisyllable".
-    Gib NUR folgendes JSON zurück:
-    {{
+    """
+    if theme:
+        prompt += f"\nBevorzuge Wörter, die thematisch zu '{theme}' passen oder eine poetische Verbindung dazu haben."
+
+    prompt += """
+    Gib NUR folgendes JSON-Format zurück:
+    {
       "exact": ["Wort1", "Wort2"],
       "near": ["Wort1", "Wort2"],
       "multisyllable": ["Wort1", "Wort2"]
-    }}
+    }
+    Maximal 10 Wörter je Kategorie.
     """
     try:
         response = ai_client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-2.5-flash',
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )
@@ -63,98 +74,151 @@ def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
     except Exception as e:
         return {"error": str(e), "categories": {"exact": [], "near": [], "multisyllable": []}}
 
+# 2. API: Klassisches Gedicht
 @app.get("/api/generate-poem")
 def generate_poem(
-    theme: str = Query("Freies Thema"),
-    poem_style: str = Query("Songtext (Strophen + Refrain + Hook)"),
+    theme: str = Query("Geburtstag"),
+    poem_style: str = Query("Klassischer Paarreim (AABB)"),
     details: Optional[str] = Query(None),
     keywords: Optional[str] = Query(None),
     exclude_words: Optional[str] = Query(None),
-    first_line: Optional[str] = Query(None),
-    lines_count: int = Query(8),
+    lines_count: int = Query(4),
     lang: str = Query("de")
 ):
     if not ai_client:
-        return {"error": "API-Schlüssel fehlt.", "result": None}
+        return {"error": "API-Schlüssel fehlt.", "poem_lines": []}
 
     language_name = LANG_NAMES.get(lang.lower(), "Deutsch")
 
     prompt = f"""
-    Du bist Songwriter und Lyriker in {language_name}.
-    Erstelle ein stimmiges Werk:
-    - Thema/Vibe: {theme}
-    - Form/Stil: {poem_style}
-    - Hintergrund/Details: {details or 'Frei passend'}
-    - Pflichtwörter: {keywords or 'Keine'}
+    Du bist ein Meister der Lyrik. Schreibe ein Gedicht in der Sprache: {language_name}.
+    Thema: {theme}
+    Gedichtform: {poem_style}
+    Details: {details or 'Allgemein passend'}
+    Pflichtwörter: {keywords or 'Keine'}
     """
     if exclude_words:
-        prompt += f"\n- TABUS / VERBOTEN (DARF NICHT VORKOMMEN): {exclude_words}. Verwende keine dieser Wörter oder Motive!"
-    if first_line:
-        prompt += f"\n- Erste Zeile MUSS lauten: '{first_line}'."
+        prompt += f"\nVERBOTENE WÖRTER/THEMEN (Darf absolut nicht vorkommen): {exclude_words}"
+
+    prompt += f"""
+    Länge: {lines_count} Zeilen. (Bei festen Formen wie Haiku oder Elfchen halte strikt deren feste Zeilen- und Silbenstruktur ein).
+    Antworte AUSSCHLIESSLICH als valides JSON-Array von Strings:
+    ["Zeile 1", "Zeile 2", "Zeile 3"]
+    """
+
+    try:
+        response = ai_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(response_mime_type="application/json")
+        )
+        data = extract_json_data(response.text)
+        if isinstance(data, dict):
+            for val in data.values():
+                if isinstance(val, list):
+                    data = val
+                    break
+        if isinstance(data, list):
+            return {"theme": theme, "poem_lines": [str(x) for x in data]}
+        return {"error": "Formatfehler", "poem_lines": []}
+    except Exception as e:
+        return {"error": f"Serverfehler: {str(e)}", "poem_lines": []}
+
+# 3. API: Song-Studio (Modular)
+class SongRequest(BaseModel):
+    task: str  # full_song, hook_only, verses_from_hook, bridge_only, chorus_only
+    vibe: str
+    existing_text: Optional[str] = None
+    details: Optional[str] = None
+    keywords: Optional[str] = None
+    exclude_words: Optional[str] = None
+    lang: Optional[str] = "de"
+
+@app.post("/api/generate-song")
+def generate_song(req: SongRequest):
+    if not ai_client:
+        return {"error": "API-Schlüssel fehlt.", "result": None}
+
+    language_name = LANG_NAMES.get((req.lang or "de").lower(), "Deutsch")
+
+    prompt = f"""
+    Du bist ein erfahrener Songwriter. Schreibe Songtexte strikt in {language_name}.
+    Übersetze Gedanken bei Bedarf ins {language_name}e.
+    
+    Musikalischer Vibe: {req.vibe}
+    Aufgabe: {req.task}
+    Details / Story: {req.details or 'Frei passend'}
+    Pflichtwörter: {req.keywords or 'Keine'}
+    """
+    if req.exclude_words:
+        prompt += f"\nTABUS (Nicht verwenden): {req.exclude_words}"
+    if req.existing_text:
+        prompt += f"\nBereits existierendes Textmaterial des Nutzers:\n\"\"\"{req.existing_text}\"\"\"\nBaue darauf auf oder ergänze es passend zur Aufgabe!"
 
     prompt += """
-    Antworte AUSSCHLIESSLICH als valides JSON-Objekt:
+    Antworte AUSSCHLIESSLICH als JSON-Objekt in dieser Struktur (fülle nur die Felder, die zur Aufgabe passen):
     {
-      "hookline": "Prägnante Hookline/Slogan",
+      "hookline": "Prägnante Hookline/Slogan (oder leer lassen)",
       "verses": [
-        ["Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"],
         ["Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"]
       ],
       "chorus": [
         "Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"
+      ],
+      "bridge": [
+        "Zeile 1 Bridge", "Zeile 2 Bridge"
       ]
     }
     """
 
     try:
         response = ai_client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-2.5-flash',
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )
         data = extract_json_data(response.text)
-        return {"theme": theme, "result": data}
+        return {"result": data}
     except Exception as e:
         return {"error": f"Serverfehler: {str(e)}", "result": None}
 
+# 4. API: Song interaktiv verfeinern
 class RefineRequest(BaseModel):
     current_song: dict
     instruction: str
     exclude_words: Optional[str] = None
     lang: Optional[str] = "de"
 
-@app.post("/api/refine-poem")
-def refine_poem(req: RefineRequest):
+@app.post("/api/refine-song")
+def refine_song(req: RefineRequest):
     if not ai_client:
         return {"error": "API-Schlüssel fehlt.", "result": None}
 
-    language_name = LANG_NAMES.get(req.lang.lower(), "Deutsch")
+    language_name = LANG_NAMES.get((req.lang or "de").lower(), "Deutsch")
 
     prompt = f"""
-    Du bist Songwriter in {language_name}.
-    Überarbeite den folgenden bestehenden Text anhand des Nutzerfeedbacks.
-    
+    Du bist Songwriter. Überarbeite den bestehenden Text auf {language_name}.
     Aktueller Stand:
     {json.dumps(req.current_song, ensure_ascii=False)}
     
-    Änderungswunsch des Nutzers:
+    Änderungswunsch:
     "{req.instruction}"
     """
     if req.exclude_words:
-        prompt += f"\nZUSÄTZLICHE TABUS (Darf keinesfalls vorkommen): {req.exclude_words}"
+        prompt += f"\nTabus: {req.exclude_words}"
 
     prompt += """
     Behalte die JSON-Struktur exakt bei:
     {
       "hookline": "...",
       "verses": [["..."]],
-      "chorus": ["..."]
+      "chorus": ["..."],
+      "bridge": ["..."]
     }
     """
-
     try:
         response = ai_client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-2.5-flash',
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )
