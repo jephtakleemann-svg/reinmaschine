@@ -1,15 +1,13 @@
 import os
 import json
-import re
 from typing import Optional
 from fastapi import FastAPI, Query
 from fastapi.staticfiles import StaticFiles
 from google import genai
-from google.genai import types
 
 app = FastAPI()
 
-# Gemini API initialisieren
+# 1. Gemini KI initialisieren (API-Key über Umgebungsvariable)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 ai_client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
@@ -20,113 +18,164 @@ LANG_NAMES = {
     "fr": "Französisch"
 }
 
-def extract_json_data(text: str):
-    """Extrahiert sauberes JSON aus dem KI-Text."""
-    if not text:
-        return None
-    cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.MULTILINE)
-    cleaned = re.sub(r"```$", "", cleaned.strip(), flags=re.MULTILINE)
-    try:
-        return json.loads(cleaned.strip())
-    except Exception:
-        match = re.search(r"(\[.*\]|\{.*\})", text, re.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group(1))
-            except Exception:
-                pass
-    return None
+def clean_json_response(raw_text: str) -> str:
+    """Entfernt eventuelle Markdown-Codeblöcke aus der KI-Antwort."""
+    text = (raw_text or "").strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
+    return text
 
-# 1. Einzelne Reimwörter finden
+# 2. Endpunkt: Einzelne Reimwörter finden (phonetisch sortiert)
 @app.get("/api/rhyme")
-def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
+def find_rhymes(
+    word: str = Query(..., min_length=1),
+    lang: str = Query("de")
+):
     if not ai_client:
-        return {"error": "API-Schlüssel fehlt.", "categories": {}}
+        return {"error": "API-Schlüssel fehlt. Bitte trage GEMINI_API_KEY ein.", "categories": {}}
 
     language_name = LANG_NAMES.get(lang.lower(), "Deutsch")
-    prompt = f"""
-    Finde hochwertige Reime auf das Wort '{word}' in der Sprache: {language_name}.
-    Kategorisiere in:
-    "exact" (reine Reime),
-    "near" (unreine Reime/Assonanzen),
-    "multisyllable" (mehrsilbige Reime).
 
-    Gib NUR folgendes JSON zurück:
+    prompt = f"""
+    Du bist ein phonetisches Reimlexikon für Lyrik, Gedichte und Songwriting in der Sprache: {language_name}.
+    Finde hochwertige, treffende Reime auf das Wort: '{word}'.
+
+    Unterteile die Treffer streng in 3 Kategorien:
+    1. "exact": Exakte/reine Reime (Endkonsonanten und Vokal klingen gleich).
+    2. "near": Unreine Reime / Assonanzen / Halbreime (klingen ähnlich, ideal für moderne Songs).
+    3. "multisyllable": Mehrsilbige Reime / Doppelreime (mindestens 2 Silben reimen sich).
+
+    Regeln:
+    - Alle Reime müssen in der Sprache {language_name} sein.
+    - Gib NUR ein valides JSON-Objekt ohne Erklärungen oder Markdown zurück.
+    Format:
     {{
-      "exact": ["Wort1", "Wort2"],
-      "near": ["Wort1", "Wort2"],
-      "multisyllable": ["Wort1", "Wort2"]
+      "exact": ["Wort1", "Wort2", ...],
+      "near": ["Wort1", "Wort2", ...],
+      "multisyllable": ["Wort1", "Wort2", ...]
     }}
-    Maximal 10 Wörter je Kategorie.
+    Maximal 10 Wörter pro Kategorie.
     """
 
     try:
         response = ai_client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json"
-            )
+            contents=prompt
         )
-        data = extract_json_data(response.text)
-        if not data:
-            data = {"exact": [], "near": [], "multisyllable": []}
+        json_str = clean_json_response(response.text)
+        data = json.loads(json_str)
         return {"word": word, "lang": language_name, "categories": data}
-    except Exception as e:
-        return {"error": str(e), "categories": {"exact": [], "near": [], "multisyllable": []}}
+    except Exception:
+        return {
+            "error": "Fehler beim Finden von Reimen.",
+            "categories": {"exact": [], "near": [], "multisyllable": []}
+        }
 
-# 2. Gedicht- & Song-Generator
-@app.get("/api/generate-poem")
-def generate_poem(
-    theme: str = Query("Geburtstag"),
-    details: Optional[str] = Query(None),
+# 3. Endpunkt: Ganze Folgezeile dichten (Songwriting-Feature mit Füllwörtern)
+@app.get("/api/generate-line")
+def generate_rhyme_line(
+    first_line: str = Query(..., min_length=2),
     keywords: Optional[str] = Query(None),
-    first_line: Optional[str] = Query(None),
-    lines_count: int = Query(4),
     lang: str = Query("de")
 ):
     if not ai_client:
-        return {"error": "API-Schlüssel nicht hinterlegt.", "poem_lines": []}
+        return {"error": "API-Schlüssel fehlt.", "lines": []}
 
     language_name = LANG_NAMES.get(lang.lower(), "Deutsch")
 
     prompt = f"""
-    Schreibe ein wohlklingendes Gedicht mit GENAU {lines_count} Zeilen auf {language_name}.
-    Thema: {theme}.
-    Details/Person: {details or 'Allgemein passend'}.
-    Pflichtwörter: {keywords or 'Keine'}.
-    """
-    if first_line:
-        prompt += f"\nErste Zeile MUSS lauten: '{first_line}'. Reime die Folgezeilen passend darauf."
+    Du bist ein erfahrener Songwriter und Dichter in der Sprache: {language_name}.
+    Der Nutzer hat folgende erste Zeile geschrieben:
+    "{first_line}"
 
-    prompt += f"""
-    WICHTIG: Antworte AUSSCHLIESSLICH als JSON-Array von {lines_count} Zeilen-Strings.
-    Beispiel:
+    Deine Aufgabe:
+    Generiere 4 passende Folgezeilen, die sich sauber auf das letzte Wort der ersten Zeile reimen.
+    Achte darauf, dass Versmaß, Rhythmus und Silbenzahl harmonisch zur ersten Zeile passen.
+    """
+
+    if keywords:
+        prompt += f"\nIntegriere nach Möglichkeit folgende Wörter/Ideen: '{keywords}'."
+
+    prompt += """
+    Gib NUR ein valides JSON-Array mit genau 4 Strings zurück.
+    Format:
     ["Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"]
     """
 
     try:
         response = ai_client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json"
-            )
+            contents=prompt
         )
-        data = extract_json_data(response.text)
+        json_str = clean_json_response(response.text)
+        lines = json.loads(json_str)
+        return {"first_line": first_line, "lines": lines}
+    except Exception:
+        return {"error": "Zeilengenerierung fehlgeschlagen.", "lines": []}
 
-        if isinstance(data, dict):
-            for val in data.values():
-                if isinstance(val, list):
-                    data = val
-                    break
+# 4. Endpunkt: Ganzes Gedicht / Songtext generieren
+@app.get("/api/generate-poem")
+def generate_poem(
+    theme: str = "Liebe",
+    details: str = "",
+    keywords: str = "",
+    lines_count: int = 16,
+    lang: str = "de"
+):
+    if not ai_client:
+        return {"error": "API-Schlüssel fehlt.", "poem": "", "text": ""}
 
-        if isinstance(data, list) and len(data) > 0:
-            return {"theme": theme, "poem_lines": [str(x) for x in data]}
-        else:
-            return {"error": "Formatfehler bei der Generierung", "poem_lines": []}
+    language_name = LANG_NAMES.get(lang.lower(), "Deutsch")
+
+    prompt = f"""
+Du bist ein erfahrener Songwriter und Dichter in der Sprache: {language_name}.
+Schreibe ein gereimtes Gedicht bzw. einen Liedtext.
+
+Thema: {theme}
+Details/Anlass: {details}
+Begriffe, die vorkommen sollen: {keywords}
+
+Aufbau (halte dich genau an diese Struktur):
+[Strophe 1] (4 Zeilen mit sauberem Reimschema)
+
+[Refrain] (4 Zeilen, eingängig und emotional)
+
+[Strophe 2] (4 Zeilen)
+
+[Refrain]
+
+[Strophe 3] (4 Zeilen)
+
+[Refrain]
+
+Gib ausschließlich den reinen Lied-/Gedichttext aus. Keine Einleitung, keine Erklärungen, keine Markdown-Codeblöcke.
+"""
+
+    try:
+        response = ai_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+        )
+        
+        result_text = response.text.strip() if response.text else ""
+        return {
+            "poem": result_text,
+            "text": result_text
+        }
+
     except Exception as e:
-        return {"error": f"Serverfehler: {str(e)}", "poem_lines": []}
+        print(f"Fehler bei Gedicht-Generierung: {e}")
+        return {
+            "error": f"Fehler bei der Generierung: {str(e)}",
+            "poem": "",
+            "text": ""
+        }
 
-# Statische Dateien mounten (Klammer korrigiert)
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+# 5. Statische Dateien (Frontend / HTML) als allerletztes ausliefern:
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="static")
