@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smarte Reimemaschine – Reime & Verse für Songs und Gedichte</title>
-  <meta name="description" content="Kostenlose phonetische Reimemaschine mit Audio-Aussprache und Zeilen-Dichter für Songs, Rap und Gedichte auf Deutsch und Englisch.">
+  <title>Smarte Reimemaschine – Reime finden & Gedichte konfigurieren</title>
+  <meta name="description" content="Reimwörter finden oder vollständige Gedichte und Songtexte nach Anlass, Name und Stichworten verfassen lassen. Mit Audio-Vorlesefunktion.">
   <style>
     :root {
       --bg: #f8fafc;
@@ -50,8 +50,6 @@
       padding: 24px;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04);
     }
-    
-    /* Tabs */
     .tab-nav {
       display: flex;
       gap: 8px;
@@ -73,12 +71,16 @@
       background: var(--primary);
       color: #ffffff;
     }
-
-    /* Formulareditoren */
     .form-group {
       margin-bottom: 14px;
     }
-    .input-row {
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .grid-3 {
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 12px;
@@ -95,14 +97,13 @@
     }
     input, select {
       width: 100%;
-      padding: 12px 14px;
+      padding: 11px 13px;
       font-size: 15px;
       border: 1px solid var(--border);
       border-radius: 8px;
       box-sizing: border-box;
       outline: none;
       background: #ffffff;
-      transition: border 0.15s;
     }
     input:focus, select:focus {
       border-color: var(--primary);
@@ -122,8 +123,6 @@
     .submit-btn:hover {
       background: var(--primary-hover);
     }
-
-    /* Ergebnis-Bereich */
     .results {
       margin-top: 28px;
     }
@@ -139,7 +138,6 @@
       font-weight: 700;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
@@ -159,76 +157,59 @@
       border-radius: 6px;
       font-size: 14px;
       cursor: pointer;
-      transition: transform 0.1s, background 0.1s;
     }
     .word-chip:hover {
       background: var(--tag-hover);
-      transform: translateY(-1px);
     }
     .speaker-btn {
       margin-left: 8px;
-      font-size: 13px;
-      opacity: 0.6;
+      font-size: 14px;
+      opacity: 0.65;
       cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
     }
     .speaker-btn:hover {
       opacity: 1;
-      transform: scale(1.2);
     }
-
-    /* Zeilen-Karten */
-    .line-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* Gedicht-Box */
+    .poem-box {
       background: #ffffff;
-      padding: 14px 16px;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 8px;
+      border-radius: 12px;
+      padding: 22px;
+      line-height: 1.8;
+      font-size: 16px;
+      font-style: italic;
+      color: #1e293b;
+      margin-bottom: 16px;
     }
-    .line-text {
-      font-size: 15px;
-      font-weight: 500;
-      line-height: 1.4;
+    .poem-action-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
     }
-
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
     .empty {
       text-align: center;
       color: var(--muted);
       margin-top: 20px;
-      font-size: 15px;
-    }
-
-    /* SEO & Footer */
-    .seo-text {
-      margin-top: 48px;
-      padding-top: 28px;
-      border-top: 1px solid var(--border);
-      color: #475569;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .seo-text h2 {
-      font-size: 17px;
-      color: var(--text);
-      margin-top: 18px;
-      margin-bottom: 6px;
     }
     footer {
-      margin-top: 36px;
+      margin-top: 40px;
       text-align: center;
       font-size: 13px;
       color: var(--muted);
-    }
-    footer a {
-      color: var(--muted);
-      margin: 0 8px;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
     }
   </style>
 </head>
@@ -236,148 +217,204 @@
 
 <div class="container">
   <h1>Smarte Reimemaschine</h1>
-  <p class="subtitle">Finde Reime, Halbreime & dichte ganze Zeilen für Songs & Gedichte.</p>
+  <p class="subtitle">Reimwörter suchen oder passende Gedichte & Songtexte verfassen.</p>
   
   <div class="card">
-    <!-- Tabs: Modus wählen -->
     <div class="tab-nav">
-      <button class="tab-btn active" id="tabWordBtn" onclick="switchTab('word')">Einzelne Reimwörter</button>
-      <button class="tab-btn" id="tabLineBtn" onclick="switchTab('line')">Ganze Zeile dichten</button>
+      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Gedicht & Song dichten</button>
+      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Einzelne Reimwörter</button>
     </div>
 
-    <!-- Modus 1: Einzelne Wörter -->
-    <div id="wordMode">
-      <div class="input-row">
+    <!-- Modus 1: Gedicht-Konfigurator -->
+    <div id="poemMode">
+      <div class="grid-2">
         <div>
-          <label>Dein Wort</label>
-          <input type="text" id="wordInput" placeholder="z. B. Traum, Nacht, Sommer..." autofocus>
+          <label>Anlass / Thema</label>
+          <select id="poemTheme">
+            <option value="Geburtstag" selected>Geburtstag allgemein</option>
+            <option value="Runder Geburtstag">Runder Geburtstag (50., 60., ...)</option>
+            <option value="Hochzeit & Liebe">Hochzeit & Liebe</option>
+            <option value="Songtext / Rap">Songtext / Rap</option>
+            <option value="Lustig & Humorvoll">Lustig & Frech</option>
+            <option value="Abschied & Rente">Abschied & Ruhestand</option>
+            <option value="Weihnachten & Neujahr">Weihnachten & Neujahr</option>
+          </select>
         </div>
         <div>
-          <label>Sprache</label>
-          <select id="langWord">
-            <option value="de" selected>Deutsch</option>
-            <option value="en">Englisch</option>
-            <option value="es">Spanisch</option>
-            <option value="fr">Französisch</option>
+          <label>Umfang / Zeilen</label>
+          <select id="poemLinesCount">
+            <option value="2">2 Zeilen (Kurzer Reim)</option>
+            <option value="4" selected>4 Zeilen (1 Strophe)</option>
+            <option value="8">8 Zeilen (2 Strophen)</option>
           </select>
         </div>
       </div>
-      <button class="submit-btn" onclick="findRhymes()">Reime finden</button>
-    </div>
 
-    <!-- Modus 2: Zeilen-Dichter -->
-    <div id="lineMode" style="display: none;">
-      <div class="input-row">
-        <div>
-          <label>Erste Zeile deines Textes</label>
-          <input type="text" id="firstLineInput" placeholder="z. B. Ich gehe nachts durch leere Straßen...">
-        </div>
-        <div>
-          <label>Sprache</label>
-          <select id="langLine">
-            <option value="de" selected>Deutsch</option>
-            <option value="en">Englisch</option>
-            <option value="es">Spanisch</option>
-            <option value="fr">Französisch</option>
-          </select>
-        </div>
-      </div>
       <div class="form-group">
-        <label>Optionale Füllwörter / Ideen für die 2. Zeile</label>
-        <input type="text" id="keywordsInput" placeholder="z. B. Schatten, Kälte, einsam (optional)">
+        <label>Details, Name & Alter (Worum geht es genau?)</label>
+        <input type="text" id="poemDetails" placeholder="z. B. Für Thomas zum 50., grillt gerne, fährt Motorrad">
       </div>
-      <button class="submit-btn" onclick="generateLines()">Passende Folgezeilen dichten</button>
+
+      <div class="form-group">
+        <label>Wörter, die unbedingt vorkommen sollen (optional)</label>
+        <input type="text" id="poemKeywords" placeholder="z. B. Bier, Harley, Legende, Glück">
+      </div>
+
+      <div class="grid-3">
+        <div>
+          <label>Erste Zeile schon im Kopf? (optional)</label>
+          <input type="text" id="poemFirstLine" placeholder="z. B. Heut trinken wir auf fünfzig Jahr...">
+        </div>
+        <div>
+          <label>Sprache</label>
+          <select id="poemLang">
+            <option value="de" selected>Deutsch</option>
+            <option value="en">Englisch</option>
+            <option value="es">Spanisch</option>
+            <option value="fr">Französisch</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="generatePoem()">Passenden Vers dichten</button>
+    </div>
+
+    <!-- Modus 2: Wortsuche -->
+    <div id="wordMode" style="display: none;">
+      <div class="grid-3">
+        <div>
+          <label>Suchwort</label>
+          <input type="text" id="wordInput" placeholder="z. B. Sommer, Herz, Traum...">
+        </div>
+        <div>
+          <label>Sprache</label>
+          <select id="wordLang">
+            <option value="de" selected>Deutsch</option>
+            <option value="en">Englisch</option>
+            <option value="es">Spanisch</option>
+            <option value="fr">Französisch</option>
+          </select>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="findRhymes()">Reime suchen</button>
     </div>
   </div>
 
-  <!-- Ergebnisbereich -->
   <div class="results" id="results"></div>
 
-  <!-- SEO-Infotext -->
-  <div class="seo-text">
-    <h2>Wie funktioniert die phonetische Reimsuche?</h2>
-    <p>
-      Im Gegensatz zu starren Lexika analysiert diese Reimmaschine den echten Klang der Wörter (Phonetik). So werden auch Begriffe erkannt, die unterschiedlich geschrieben werden, aber im Ohr harmonieren.
-    </p>
-    <h2>Reimarten erklärt</h2>
-    <p>
-      <strong>Reine Reime:</strong> Identischer Endklang (z. B. <em>Haus / Maus</em>).<br>
-      <strong>Unreine Reime (Assonanzen):</strong> Ähnliche Vokale – perfekt für Pop- und Rocksongs.<br>
-      <strong>Mehrsilbige Reime:</strong> Mindestens zwei Silben reimen sich, was für flüssigen Rhythmus und anspruchsvollen Flow sorgt.
-    </p>
-  </div>
-
   <footer>
-    <a href="/impressum.html">Impressum</a> | 
-    <a href="/datenschutz.html">Datenschutz</a>
+    <a href="/impressum.html">Impressum</a> | <a href="/datenschutz.html">Datenschutz</a>
   </footer>
 </div>
 
 <script>
-  let currentMode = 'word';
+  let currentPoemText = "";
 
-  function switchTab(mode) {
-    currentMode = mode;
+  function switchTab(tab) {
+    const poemMode = document.getElementById('poemMode');
     const wordMode = document.getElementById('wordMode');
-    const lineMode = document.getElementById('lineMode');
+    const tabPoemBtn = document.getElementById('tabPoemBtn');
     const tabWordBtn = document.getElementById('tabWordBtn');
-    const tabLineBtn = document.getElementById('tabLineBtn');
-    const results = document.getElementById('results');
+    document.getElementById('results').innerHTML = '';
 
-    results.innerHTML = '';
-
-    if (mode === 'word') {
-      wordMode.style.display = 'block';
-      lineMode.style.display = 'none';
-      tabWordBtn.classList.add('active');
-      tabLineBtn.classList.remove('active');
-      document.getElementById('wordInput').focus();
-    } else {
+    if (tab === 'poem') {
+      poemMode.style.display = 'block';
       wordMode.style.display = 'none';
-      lineMode.style.display = 'block';
-      tabLineBtn.classList.add('active');
+      tabPoemBtn.classList.add('active');
       tabWordBtn.classList.remove('active');
-      document.getElementById('firstLineInput').focus();
+    } else {
+      poemMode.style.display = 'none';
+      wordMode.style.display = 'block';
+      tabWordBtn.classList.add('active');
+      tabPoemBtn.classList.remove('active');
+      document.getElementById('wordInput').focus();
     }
   }
 
-  // 1. Reime suchen
+  // 1. Gedicht generieren
+  async function generatePoem() {
+    const theme = document.getElementById('poemTheme').value;
+    const linesCount = document.getElementById('poemLinesCount').value;
+    const details = document.getElementById('poemDetails').value.trim();
+    const keywords = document.getElementById('poemKeywords').value.trim();
+    const firstLine = document.getElementById('poemFirstLine').value.trim();
+    const lang = document.getElementById('poemLang').value;
+    const container = document.getElementById('results');
+
+    container.innerHTML = '<p class="empty">Dein Gedicht wird mit passenden Reimen verfasst...</p>';
+
+    const params = new URLSearchParams({
+      theme: theme,
+      lines_count: linesCount,
+      lang: lang
+    });
+    if (details) params.append('details', details);
+    if (keywords) params.append('keywords', keywords);
+    if (firstLine) params.append('first_line', firstLine);
+
+    try {
+      const res = await fetch(`/api/generate-poem?${params.toString()}`);
+      const data = await res.json();
+
+      if (data.error || !data.poem_lines || data.poem_lines.length === 0) {
+        container.innerHTML = '<p class="empty">Konnte kein Gedicht erstellen. Bitte Angaben anpassen.</p>';
+        return;
+      }
+
+      currentPoemText = data.poem_lines.join('\n');
+
+      container.innerHTML = `
+        <div class="category-block">
+          <div class="category-title">
+            <span>Dein Gedicht (${theme})</span>
+            <span>${data.poem_lines.length} Zeilen</span>
+          </div>
+          <div class="poem-box">
+            ${data.poem_lines.map(l => `<div>${l}</div>`).join('')}
+          </div>
+          <div class="poem-action-bar">
+            <button class="btn-secondary" onclick="speakText(currentPoemText, '${lang}')">🔊 Laut vorlesen</button>
+            <button class="btn-secondary" onclick="copyPoem()">📋 Gedicht kopieren</button>
+          </div>
+        </div>
+      `;
+    } catch (e) {
+      container.innerHTML = '<p class="empty">Verbindungsfehler zum Server.</p>';
+    }
+  }
+
+  function copyPoem() {
+    navigator.clipboard.writeText(currentPoemText);
+    alert("Gedicht in die Zwischenablage kopiert!");
+  }
+
+  // 2. Einzelne Reime
   async function findRhymes() {
     const word = document.getElementById('wordInput').value.trim();
-    const lang = document.getElementById('langWord').value;
+    const lang = document.getElementById('wordLang').value;
     const container = document.getElementById('results');
 
     if (!word) {
-      container.innerHTML = '<p class="empty">Bitte gib zuerst ein Wort ein.</p>';
+      container.innerHTML = '<p class="empty">Bitte gib ein Wort ein.</p>';
       return;
     }
 
-    container.innerHTML = '<p class="empty">Reime werden ermittelt...</p>';
+    container.innerHTML = '<p class="empty">Suche Reime...</p>';
 
     try {
       const res = await fetch(`/api/rhyme?word=${encodeURIComponent(word)}&lang=${encodeURIComponent(lang)}`);
       const data = await res.json();
 
-      if (data.error || !data.categories) {
-        container.innerHTML = `<p class="empty">${data.error || 'Keine Treffer.'}</p>`;
-        return;
-      }
-
-      const exact = data.categories.exact || [];
-      const near = data.categories.near || [];
-      const multi = data.categories.multisyllable || [];
-
-      if (exact.length === 0 && near.length === 0 && multi.length === 0) {
-        container.innerHTML = '<p class="empty">Keine Reime gefunden. Versuche ein anderes Wort.</p>';
-        return;
-      }
+      const exact = data.categories?.exact || [];
+      const multi = data.categories?.multisyllable || [];
+      const near = data.categories?.near || [];
 
       let html = '';
-      if (exact.length > 0) html += renderWordBlock('Exakte Reime', exact, lang);
-      if (multi.length > 0) html += renderWordBlock('Mehrsilbige Reime / Doppelreime', multi, lang);
-      if (near.length > 0) html += renderWordBlock('Unreine Reime / Halbreime', near, lang);
+      if (exact.length) html += renderWordBlock('Exakte Reime', exact, lang);
+      if (multi.length) html += renderWordBlock('Mehrsilbige Reime', multi, lang);
+      if (near.length) html += renderWordBlock('Halbreime', near, lang);
 
-      container.innerHTML = html;
+      container.innerHTML = html || '<p class="empty">Keine Reime gefunden.</p>';
     } catch (e) {
       container.innerHTML = '<p class="empty">Verbindungsfehler zum Server.</p>';
     }
@@ -386,15 +423,12 @@
   function renderWordBlock(title, words, lang) {
     return `
       <div class="category-block">
-        <div class="category-title">
-          <span>${title}</span>
-          <span>${words.length} Wörter</span>
-        </div>
+        <div class="category-title">${title} (${words.length})</div>
         <div class="word-cloud">
           ${words.map(w => `
-            <span class="word-chip" onclick="continueSearch('${w}')">
+            <span class="word-chip">
               <span>${w}</span>
-              <span class="speaker-btn" onclick="speakText(event, '${w}', '${lang}')" title="Vorlesen">🔊</span>
+              <span class="speaker-btn" onclick="speakText('${w}', '${lang}')">🔊</span>
             </span>
           `).join('')}
         </div>
@@ -402,87 +436,15 @@
     `;
   }
 
-  function continueSearch(word) {
-    document.getElementById('wordInput').value = word;
-    findRhymes();
-  }
-
-  // 2. Ganze Zeilen dichten
-  async function generateLines() {
-    const firstLine = document.getElementById('firstLineInput').value.trim();
-    const keywords = document.getElementById('keywordsInput').value.trim();
-    const lang = document.getElementById('langLine').value;
-    const container = document.getElementById('results');
-
-    if (!firstLine) {
-      container.innerHTML = '<p class="empty">Bitte gib die erste Zeile ein.</p>';
-      return;
-    }
-
-    container.innerHTML = '<p class="empty">Reime und Rhythmen werden gedichtet...</p>';
-
-    try {
-      const params = new URLSearchParams({ first_line: firstLine, lang: lang });
-      if (keywords) params.append('keywords', keywords);
-
-      const res = await fetch(`/api/generate-line?${params.toString()}`);
-      const data = await res.json();
-
-      if (data.error || !data.lines || data.lines.length === 0) {
-        container.innerHTML = `<p class="empty">${data.error || 'Konnte keine Zeilen generieren.'}</p>`;
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="category-block">
-          <div class="category-title">
-            <span>Vorschläge für deine Folgezeile</span>
-            <span>4 Varianten</span>
-          </div>
-          ${data.lines.map(line => `
-            <div class="line-card">
-              <span class="line-text">${line}</span>
-              <span class="speaker-btn" onclick="speakText(event, '${line.replace(/'/g, "\\'")}', '${lang}')" title="Zeile vorlesen">🔊</span>
-            </div>
-          `).join('')}
-        </div>
-      `;
-    } catch (e) {
-      container.innerHTML = '<p class="empty">Verbindungsfehler zum Server.</p>';
-    }
-  }
-
-  // 3. Audio-Ausgabe (Browser Web Speech API)
-  function speakText(event, text, langCode) {
-    event.stopPropagation();
-
-    if (!('speechSynthesis' in window)) {
-      alert("Sprachausgabe im Browser nicht unterstützt.");
-      return;
-    }
-
-    const mapping = {
-      de: 'de-DE',
-      en: 'en-US',
-      es: 'es-ES',
-      fr: 'fr-FR'
-    };
-
+  function speakText(text, lang) {
+    if (!('speechSynthesis' in window)) return;
+    const mapping = { de: 'de-DE', en: 'en-US', es: 'es-ES', fr: 'fr-FR' };
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = mapping[langCode] || 'de-DE';
-    utterance.rate = 0.9;
-
-    window.speechSynthesis.speak(utterance);
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = mapping[lang] || 'de-DE';
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
   }
-
-  // Enter-Taste fängt ab
-  document.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      if (currentMode === 'word') findRhymes();
-      else generateLines();
-    }
-  });
 </script>
 
 </body>
