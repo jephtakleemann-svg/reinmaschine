@@ -39,13 +39,13 @@ def extract_json_data(text: str):
 
 def call_gemini(prompt: str):
     # Nutzt primär das von Google verlangte gemini-3.6-flash
-    models = ['gemini-3.6-flash', 'gemini-2.5-flash']
+    models = ['gemini-3.6-flash', 'gemini-3.6']
     for model_name in models:
         try:
             return ai_client.models.generate_content(
                 model=model_name,
                 contents=prompt,
-                config=types.GenerateContentConfig(response_mime_type="application/json")
+                config={"response_mime_type": "application/json"}
             )
         except Exception as e:
             if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e):
@@ -55,7 +55,7 @@ def call_gemini(prompt: str):
                 continue
             raise e
     raise Exception("KI-Dienst momentan überlastet. Bitte gleich nochmal probieren.")
-
+    
 # 1. API: Einzelne Reimwörter
 @app.get("/api/rhyme")
 def find_rhymes(
