@@ -12,7 +12,7 @@
       --primary-hover: #4338ca;
       --text: #0f172a;
       --muted: #64748b;
-      --border: #e2e8f0;
+      --border: #cbd5e1;
       --tag-bg: #eef2ff;
       --chorus-bg: #f5f3ff;
       --chorus-border: #c4b5fd;
@@ -31,7 +31,7 @@
       display: flex;
       justify-content: center;
     }
-    .container { width: 100%; max-width: 760px; }
+    .container { width: 100%; max-width: 740px; }
     h1 { font-size: 26px; font-weight: 800; text-align: center; margin: 0 0 6px 0; }
     .subtitle { text-align: center; color: var(--muted); margin: 0 0 20px 0; font-size: 14px; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04); }
@@ -43,9 +43,8 @@
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     input, select, textarea { width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; outline: none; background: #ffffff; font-family: inherit; }
-    textarea { resize: vertical; min-height: 80px; }
+    textarea { resize: vertical; min-height: 85px; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-    .taboo-input { border-color: #fca5a5 !important; background-color: #fffaf0; }
     .submit-btn { width: 100%; background: var(--primary); color: white; font-size: 15px; font-weight: 700; padding: 13px; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px; }
     .submit-btn:hover { background: var(--primary-hover); }
     .results { margin-top: 24px; }
@@ -91,7 +90,7 @@
             <option value="Liebe & Romantik">Liebe & Romantik</option>
             <option value="Lustig & Frech">Lustig & Frech</option>
             <option value="Abschied">Abschied</option>
-            <option value="Natur & Jahreszeiten">Natur & Poesie</option>
+            <option value="Natur & Poesie">Natur & Poesie</option>
             <option value="Freies Thema">Freies Thema</option>
           </select>
         </div>
@@ -126,8 +125,8 @@
           <input type="text" id="poemKeywords" placeholder="z. B. Grillzange, Wein">
         </div>
         <div>
-          <label style="color: #b91c1c;">⛔ Tabus (Darf nicht vorkommen)</label>
-          <input type="text" id="poemExclude" class="taboo-input" placeholder="z. B. Alter, Krückstock, grau">
+          <label>Tabu-Themen (optional)</label>
+          <input type="text" id="poemExclude" placeholder="z. B. Alter, Krückstock, grau">
         </div>
       </div>
 
@@ -147,12 +146,13 @@
       <div class="grid-2">
         <div>
           <label>Aufgabe / Was brauchst du?</label>
-          <select id="songTask">
-            <option value="full_song">Kompletten Song (Strophen + Chorus + Hook)</option>
-            <option value="hook_only">Nur eingängige Hookline generieren</option>
+          <select id="songTask" onchange="toggleSongInput()">
+            <option value="full_song" selected>Kompletter Song (Strophen, Chorus, Hook)</option>
+            <option value="hook_only">Nur Hookline generieren</option>
             <option value="chorus_only">Nur Refrain (Chorus) generieren</option>
             <option value="bridge_only">Nur Bridge (Überleitung) generieren</option>
             <option value="verses_from_hook">Strophen passend zu meiner Hookline dichten</option>
+            <option value="hook_from_verse">Hookline passend zu meiner Strophe finden</option>
           </select>
         </div>
         <div>
@@ -170,14 +170,15 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Dein vorhandener Text / Hook / Idee (optional)</label>
-        <textarea id="songExisting" placeholder="Füge hier deine fertige Strophe ein, um eine Hook zu bekommen – oder deine Hookline, um Strophen darum herum zu bauen..."></textarea>
+      <!-- Wird nur eingeblendet, wenn man vorhandenen Text weiterverarbeiten will -->
+      <div class="form-group" id="existingTextGroup" style="display: none;">
+        <label id="existingTextLabel">Dein vorhandener Text</label>
+        <textarea id="songExisting" placeholder="Füge hier deine Zeilen ein..."></textarea>
       </div>
 
       <div class="form-group">
         <label>Story, Person & Hintergrund</label>
-        <input type="text" id="songDetails" placeholder="z. B. Für Angie: laute Verstärker, Nachtfahrten, Treue ohne Kitsch">
+        <input type="text" id="songDetails" placeholder="z. B. Für Angie: laute Verstärker, Nachtfahrten, Treue">
       </div>
 
       <div class="grid-2">
@@ -186,8 +187,8 @@
           <input type="text" id="songKeywords" placeholder="z. B. Feedback, Verzerrer, Tourbus">
         </div>
         <div>
-          <label style="color: #b91c1c;">⛔ Tabu-Themen / Kitsch-Filter</label>
-          <input type="text" id="songExclude" class="taboo-input" placeholder="z. B. Hochzeit, Ringe, Kirche, Schnulz">
+          <label>Tabu-Themen (optional)</label>
+          <input type="text" id="songExclude" placeholder="z. B. Hochzeit, Ringe, Kirche">
         </div>
       </div>
 
@@ -204,15 +205,13 @@
 
     <!-- REITER 3: REIMWÖRTER -->
     <div id="wordTab" style="display: none;">
-      <div class="grid-2">
-        <div>
-          <label>Suchwort</label>
-          <input type="text" id="wordInput" placeholder="z. B. Beat, Sound, Nacht...">
-        </div>
-        <div>
-          <label>Thema / Kontext (optional)</label>
-          <input type="text" id="wordTheme" placeholder="z. B. Rockmusik, Liebe, Natur...">
-        </div>
+      <div class="form-group">
+        <label>Suchwort</label>
+        <input type="text" id="wordInput" placeholder="z. B. Beat, Sound, Scheinwerferlicht...">
+      </div>
+      <div class="form-group">
+        <label>Thema / Kontext (optional)</label>
+        <input type="text" id="wordTheme" placeholder="z. B. Rockmusik, Liebe, Natur...">
       </div>
       <div class="form-group">
         <label>Sprache</label>
@@ -243,7 +242,23 @@
     document.getElementById('results').innerHTML = '';
   }
 
-  // 1. Gedicht generieren
+  // Blendet das Textfeld bedingt ein/aus
+  function toggleSongInput() {
+    const task = document.getElementById('songTask').value;
+    const group = document.getElementById('existingTextGroup');
+    const label = document.getElementById('existingTextLabel');
+
+    if (task === 'verses_from_hook') {
+      group.style.display = 'block';
+      label.innerText = "Deine Hookline (worum die Strophen gebaut werden):";
+    } else if (task === 'hook_from_verse') {
+      group.style.display = 'block';
+      label.innerText = "Deine vorhandene Strophe / Textzeilen:";
+    } else {
+      group.style.display = 'none';
+    }
+  }
+
   async function generatePoem() {
     const theme = document.getElementById('poemTheme').value;
     const style = document.getElementById('poemStyle').value;
@@ -289,7 +304,6 @@
     }
   }
 
-  // 2. Song Studio generieren
   async function generateSong() {
     const task = document.getElementById('songTask').value;
     const vibe = document.getElementById('songVibe').value;
@@ -364,7 +378,7 @@
         <div class="refine-card">
           <label style="color: #334155;">✨ Nachbessern / Umschreiben</label>
           <div class="refine-flex">
-            <input type="text" id="refineInput" placeholder="z. B. Hook härter formulieren / 2. Zeile im Chorus ändern...">
+            <input type="text" id="refineInput" placeholder="z. B. Hook griffiger machen / Refrain anpassen...">
             <button class="refine-btn" onclick="refineSong('${lang}')">Anpassen</button>
           </div>
         </div>
@@ -401,7 +415,6 @@
     }
   }
 
-  // 3. Reimwörter suchen mit Thema
   async function findRhymes() {
     const word = document.getElementById('wordInput').value.trim();
     const theme = document.getElementById('wordTheme').value.trim();
