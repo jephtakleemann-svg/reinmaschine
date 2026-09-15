@@ -9,7 +9,7 @@ from google.genai import types
 
 app = FastAPI()
 
-# 1. Gemini API initialisieren
+# Gemini API initialisieren
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 ai_client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
@@ -21,16 +21,14 @@ LANG_NAMES = {
 }
 
 def extract_json_data(text: str):
-    """Holt zuverlässig JSON aus der Antwort heraus."""
+    """Extrahiert sauberes JSON aus dem KI-Text."""
     if not text:
         return None
-    # Entferne Markdown Code-Blöcke
     cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.MULTILINE)
     cleaned = re.sub(r"```$", "", cleaned.strip(), flags=re.MULTILINE)
     try:
         return json.loads(cleaned.strip())
     except Exception:
-        # Fallback: Suche erstes Array oder Objekt per Regex
         match = re.search(r"(\[.*\]|\{.*\})", text, re.DOTALL)
         if match:
             try:
@@ -39,7 +37,7 @@ def extract_json_data(text: str):
                 pass
     return None
 
-# 2. Reime finden
+# 1. Einzelne Reimwörter finden
 @app.get("/api/rhyme")
 def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
     if not ai_client:
@@ -77,7 +75,7 @@ def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
     except Exception as e:
         return {"error": str(e), "categories": {"exact": [], "near": [], "multisyllable": []}}
 
-# 3. Gedicht- & Song-Generator
+# 2. Gedicht- & Song-Generator
 @app.get("/api/generate-poem")
 def generate_poem(
     theme: str = Query("Geburtstag"),
@@ -117,9 +115,7 @@ def generate_poem(
         )
         data = extract_json_data(response.text)
 
-        # Falls ein Dictionary statt Liste geliefert wurde
         if isinstance(data, dict):
-            # Nimmt die erste Liste, die im Dictionary vorkommt
             for val in data.values():
                 if isinstance(val, list):
                     data = val
@@ -132,4 +128,5 @@ def generate_poem(
     except Exception as e:
         return {"error": f"Serverfehler: {str(e)}", "poem_lines": []}
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")ml=True), name="static")
+# Statische Dateien mounten (Klammer korrigiert)
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
