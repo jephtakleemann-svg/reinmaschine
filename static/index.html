@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smarte Reimemaschine – Reime finden & Gedichte konfigurieren</title>
-  <meta name="description" content="Reimwörter finden oder vollständige Gedichte und Songtexte nach Anlass, Name und Stichworten verfassen lassen. Mit Audio-Vorlesefunktion.">
+  <title>Smarte Reimemaschine & Lyrik-Generator</title>
+  <meta name="description" content="Lyrik, Gedichte und Reime per KI.">
   <style>
     :root {
       --bg: #f8fafc;
@@ -26,244 +26,96 @@
       display: flex;
       justify-content: center;
     }
-    .container {
-      width: 100%;
-      max-width: 680px;
-    }
-    h1 {
-      font-size: 28px;
-      font-weight: 800;
-      text-align: center;
-      margin: 0 0 6px 0;
-      letter-spacing: -0.5px;
-    }
-    .subtitle {
-      text-align: center;
-      color: var(--muted);
-      margin: 0 0 24px 0;
-      font-size: 15px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04);
-    }
-    .tab-nav {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 10px 14px;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #e2e8f0;
-      color: var(--muted);
-      transition: all 0.15s ease;
-    }
-    .tab-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-    }
-    .form-group {
-      margin-bottom: 14px;
-    }
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    input, select {
-      width: 100%;
-      padding: 11px 13px;
-      font-size: 15px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      box-sizing: border-box;
-      outline: none;
-      background: #ffffff;
-    }
-    input:focus, select:focus {
-      border-color: var(--primary);
-    }
-    .submit-btn {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .submit-btn:hover {
-      background: var(--primary-hover);
-    }
-    .results {
-      margin-top: 28px;
-    }
-    .category-block {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px 20px;
-      margin-bottom: 16px;
-    }
-    .category-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .word-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .word-chip {
-      display: inline-flex;
-      align-items: center;
-      background: var(--tag-bg);
-      color: var(--primary);
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .word-chip:hover {
-      background: var(--tag-hover);
-    }
-    .speaker-btn {
-      margin-left: 8px;
-      font-size: 14px;
-      opacity: 0.65;
-      cursor: pointer;
-    }
-    .speaker-btn:hover {
-      opacity: 1;
-    }
-    /* Gedicht-Box */
-    .poem-box {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 22px;
-      line-height: 1.8;
-      font-size: 16px;
-      font-style: italic;
-      color: #1e293b;
-      margin-bottom: 16px;
-    }
-    .poem-action-bar {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .btn-secondary {
-      background: #f1f5f9;
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-secondary:hover {
-      background: #e2e8f0;
-    }
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      margin-top: 20px;
-    }
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-    }
+    .container { width: 100%; max-width: 700px; }
+    h1 { font-size: 28px; font-weight: 800; text-align: center; margin: 0 0 6px 0; }
+    .subtitle { text-align: center; color: var(--muted); margin: 0 0 24px 0; font-size: 15px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04); }
+    .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 10px 14px; font-size: 14px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; background: #e2e8f0; color: var(--muted); transition: all 0.15s ease; }
+    .tab-btn.active { background: var(--primary); color: #ffffff; }
+    .form-group { margin-bottom: 14px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select { width: 100%; padding: 11px 13px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; outline: none; background: #ffffff; }
+    input:focus, select:focus { border-color: var(--primary); }
+    .submit-btn { width: 100%; background: var(--primary); color: white; font-size: 16px; font-weight: 600; padding: 14px; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-top: 10px; }
+    .submit-btn:hover { background: var(--primary-hover); }
+    .results { margin-top: 28px; }
+    .category-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+    .category-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; }
+    .word-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+    .word-chip { display: inline-flex; align-items: center; background: var(--tag-bg); color: var(--primary); font-weight: 600; padding: 6px 12px; border-radius: 6px; font-size: 14px; cursor: pointer; }
+    .word-chip:hover { background: var(--tag-hover); }
+    .speaker-btn { margin-left: 8px; font-size: 14px; opacity: 0.65; cursor: pointer; }
+    .poem-box { background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 22px; line-height: 1.8; font-size: 16px; font-style: italic; color: #1e293b; margin-bottom: 16px; white-space: pre-wrap; }
+    .poem-action-bar { display: flex; gap: 10px; margin-top: 14px; }
+    .btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .empty { text-align: center; color: var(--muted); margin-top: 20px; font-weight: 500;}
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Smarte Reimemaschine</h1>
-  <p class="subtitle">Reimwörter suchen oder passende Gedichte & Songtexte verfassen.</p>
+  <h1>Smarte Reimemaschine & Lyrik</h1>
+  <p class="subtitle">Ein Wort reimt sich nie allein – schreibe ganze Gedichte nach Maß.</p>
   
   <div class="card">
     <div class="tab-nav">
-      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Gedicht & Song dichten</button>
-      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Einzelne Reimwörter</button>
+      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Gedicht / Text dichten</button>
+      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Einzelne Wörter reimen</button>
     </div>
 
-    <!-- Modus 1: Gedicht-Konfigurator -->
+    <!-- Modus 1: Gedicht & Lyrik -->
     <div id="poemMode">
-      <div class="grid-2">
-        <div>
-          <label>Anlass / Thema</label>
-          <select id="poemTheme">
-            <option value="Geburtstag" selected>Geburtstag allgemein</option>
-            <option value="Runder Geburtstag">Runder Geburtstag (50., 60., ...)</option>
-            <option value="Hochzeit & Liebe">Hochzeit & Liebe</option>
-            <option value="Songtext / Rap">Songtext / Rap</option>
-            <option value="Lustig & Humorvoll">Lustig & Frech</option>
-            <option value="Abschied & Rente">Abschied & Ruhestand</option>
-            <option value="Weihnachten & Neujahr">Weihnachten & Neujahr</option>
-          </select>
-        </div>
-        <div>
-          <label>Umfang / Zeilen</label>
-          <select id="poemLinesCount">
-            <option value="2">2 Zeilen (Kurzer Reim)</option>
-            <option value="4" selected>4 Zeilen (1 Strophe)</option>
-            <option value="8">8 Zeilen (2 Strophen)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Details, Name & Alter (Worum geht es genau?)</label>
-        <input type="text" id="poemDetails" placeholder="z. B. Für Thomas zum 50., grillt gerne, fährt Motorrad">
-      </div>
-
-      <div class="form-group">
-        <label>Wörter, die unbedingt vorkommen sollen (optional)</label>
-        <input type="text" id="poemKeywords" placeholder="z. B. Bier, Harley, Legende, Glück">
-      </div>
-
       <div class="grid-3">
         <div>
-          <label>Erste Zeile schon im Kopf? (optional)</label>
-          <input type="text" id="poemFirstLine" placeholder="z. B. Heut trinken wir auf fünfzig Jahr...">
+          <label>Thema</label>
+          <select id="poemTheme">
+            <option value="Geburtstag">Geburtstag</option>
+            <option value="Liebe & Romantik">Liebe & Romantik</option>
+            <option value="Lustig & Frech">Lustig & Frech</option>
+            <option value="Abschied">Abschied & Neuanfang</option>
+            <option value="Natur & Poesie">Natur & Poesie</option>
+            <option value="Freies Thema">Freies Thema</option>
+          </select>
+        </div>
+        <div>
+          <label>Gedichtform</label>
+          <select id="poemStyle">
+            <option value="Klassischer Paarreim (AABB)">Paarreim (AABB)</option>
+            <option value="Kreuzreim (ABAB)">Kreuzreim (ABAB)</option>
+            <option value="Haiku (5-7-5 Silben)">Haiku (Japanisch)</option>
+            <option value="Elfchen (11 Wörter, 5 Zeilen)">Elfchen (5 Zeilen)</option>
+            <option value="Freier Vers (ohne Reimzwang)">Freier Vers</option>
+          </select>
+        </div>
+        <div>
+          <label>Länge</label>
+          <select id="poemLinesCount">
+            <option value="2">2 Zeilen</option>
+            <option value="4" selected>4 Zeilen (1 Strophe)</option>
+            <option value="8">8 Zeilen (2 Strophen)</option>
+            <option value="12">12 Zeilen (3 Strophen)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Worum geht es genau? (Name, Details)</label>
+        <input type="text" id="poemDetails" placeholder="z. B. Für Jens, spielt gerne Jazz-Gitarre und fährt Camper">
+      </div>
+
+      <div class="form-group">
+        <label>Pflichtwörter (optional)</label>
+        <input type="text" id="poemKeywords" placeholder="z. B. Stratocaster, Bretagne, Holz">
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Eigene erste Zeile (optional)</label>
+          <input type="text" id="poemFirstLine" placeholder="z. B. Der Camper rollt ans weite Meer...">
         </div>
         <div>
           <label>Sprache</label>
@@ -276,12 +128,12 @@
         </div>
       </div>
 
-      <button class="submit-btn" onclick="generatePoem()">Passenden Vers dichten</button>
+      <button class="submit-btn" onclick="generatePoem()">Werk erschaffen 🖋️</button>
     </div>
 
     <!-- Modus 2: Wortsuche -->
     <div id="wordMode" style="display: none;">
-      <div class="grid-3">
+      <div class="grid-2">
         <div>
           <label>Suchwort</label>
           <input type="text" id="wordInput" placeholder="z. B. Sommer, Herz, Traum...">
@@ -296,44 +148,28 @@
           </select>
         </div>
       </div>
-      <button class="submit-btn" onclick="findRhymes()">Reime suchen</button>
+      <button class="submit-btn" onclick="findRhymes()">Reime suchen 🔍</button>
     </div>
   </div>
 
   <div class="results" id="results"></div>
 
-  <footer>
-    <a href="/impressum.html">Impressum</a> | <a href="/datenschutz.html">Datenschutz</a>
-  </footer>
 </div>
 
 <script>
   let currentPoemText = "";
 
   function switchTab(tab) {
-    const poemMode = document.getElementById('poemMode');
-    const wordMode = document.getElementById('wordMode');
-    const tabPoemBtn = document.getElementById('tabPoemBtn');
-    const tabWordBtn = document.getElementById('tabWordBtn');
+    document.getElementById('poemMode').style.display = tab === 'poem' ? 'block' : 'none';
+    document.getElementById('wordMode').style.display = tab === 'word' ? 'block' : 'none';
+    document.getElementById('tabPoemBtn').classList.toggle('active', tab === 'poem');
+    document.getElementById('tabWordBtn').classList.toggle('active', tab === 'word');
     document.getElementById('results').innerHTML = '';
-
-    if (tab === 'poem') {
-      poemMode.style.display = 'block';
-      wordMode.style.display = 'none';
-      tabPoemBtn.classList.add('active');
-      tabWordBtn.classList.remove('active');
-    } else {
-      poemMode.style.display = 'none';
-      wordMode.style.display = 'block';
-      tabWordBtn.classList.add('active');
-      tabPoemBtn.classList.remove('active');
-      document.getElementById('wordInput').focus();
-    }
   }
 
-  // 1. Gedicht generieren
   async function generatePoem() {
     const theme = document.getElementById('poemTheme').value;
+    const style = document.getElementById('poemStyle').value;
     const linesCount = document.getElementById('poemLinesCount').value;
     const details = document.getElementById('poemDetails').value.trim();
     const keywords = document.getElementById('poemKeywords').value.trim();
@@ -341,13 +177,9 @@
     const lang = document.getElementById('poemLang').value;
     const container = document.getElementById('results');
 
-    container.innerHTML = '<p class="empty">Dein Gedicht wird mit passenden Reimen verfasst...</p>';
+    container.innerHTML = '<p class="empty">Die KI spitzt die Feder...</p>';
 
-    const params = new URLSearchParams({
-      theme: theme,
-      lines_count: linesCount,
-      lang: lang
-    });
+    const params = new URLSearchParams({ theme, poem_style: style, lines_count: linesCount, lang });
     if (details) params.append('details', details);
     if (keywords) params.append('keywords', keywords);
     if (firstLine) params.append('first_line', firstLine);
@@ -357,24 +189,31 @@
       const data = await res.json();
 
       if (data.error || !data.poem_lines || data.poem_lines.length === 0) {
-        container.innerHTML = '<p class="empty">Konnte kein Gedicht erstellen. Bitte Angaben anpassen.</p>';
+        container.innerHTML = `<p class="empty">Fehler: ${data.error || 'Konnte kein Gedicht erstellen.'}</p>`;
         return;
       }
 
       currentPoemText = data.poem_lines.join('\n');
+      
+      // Optisch Strophenabstände einbauen (bei 8 oder 12 Zeilen)
+      let formattedHtml = '';
+      data.poem_lines.forEach((line, index) => {
+          formattedHtml += `<div>${line}</div>`;
+          if ((index + 1) % 4 === 0 && index + 1 !== data.poem_lines.length && style.includes("Reim")) {
+             formattedHtml += `<br>`; // Leerzeile nach jeder Strophe
+          }
+      });
 
       container.innerHTML = `
         <div class="category-block">
           <div class="category-title">
-            <span>Dein Gedicht (${theme})</span>
-            <span>${data.poem_lines.length} Zeilen</span>
+            <span>Dein Gedicht</span>
+            <span>${style.split(' ')[0]} / ${data.poem_lines.length} Zeilen</span>
           </div>
-          <div class="poem-box">
-            ${data.poem_lines.map(l => `<div>${l}</div>`).join('')}
-          </div>
+          <div class="poem-box">${formattedHtml}</div>
           <div class="poem-action-bar">
             <button class="btn-secondary" onclick="speakText(currentPoemText, '${lang}')">🔊 Laut vorlesen</button>
-            <button class="btn-secondary" onclick="copyPoem()">📋 Gedicht kopieren</button>
+            <button class="btn-secondary" onclick="copyPoem()">📋 Text kopieren</button>
           </div>
         </div>
       `;
@@ -385,10 +224,9 @@
 
   function copyPoem() {
     navigator.clipboard.writeText(currentPoemText);
-    alert("Gedicht in die Zwischenablage kopiert!");
+    alert("Kopiert!");
   }
 
-  // 2. Einzelne Reime
   async function findRhymes() {
     const word = document.getElementById('wordInput').value.trim();
     const lang = document.getElementById('wordLang').value;
@@ -398,13 +236,11 @@
       container.innerHTML = '<p class="empty">Bitte gib ein Wort ein.</p>';
       return;
     }
-
     container.innerHTML = '<p class="empty">Suche Reime...</p>';
 
     try {
       const res = await fetch(`/api/rhyme?word=${encodeURIComponent(word)}&lang=${encodeURIComponent(lang)}`);
       const data = await res.json();
-
       const exact = data.categories?.exact || [];
       const multi = data.categories?.multisyllable || [];
       const near = data.categories?.near || [];
