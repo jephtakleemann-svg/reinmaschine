@@ -3,15 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smarte Reimemaschine & Song-Generator</title>
+  <title>Smarte Reimemaschine & Song-Studio</title>
   <style>
     :root {
-      --bg: #f8fafc; --card: #ffffff; --primary: #4f46e5; --primary-hover: #4338ca;
-      --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --tag-bg: #eef2ff; --tag-hover: #e0e7ff;
-      --chorus-bg: #f5f3ff; --chorus-border: #c4b5fd; --hook-bg: #fef3c7; --hook-border: #fcd34d;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --tag-bg: #eef2ff;
+      --chorus-bg: #f5f3ff;
+      --chorus-border: #c4b5fd;
+      --hook-bg: #fef3c7;
+      --hook-border: #fcd34d;
+      --refine-bg: #f1f5f9;
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 36px 16px; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 720px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+    }
+    .container { width: 100%; max-width: 740px; }
     h1 { font-size: 28px; font-weight: 800; text-align: center; margin: 0 0 6px 0; }
     .subtitle { text-align: center; color: var(--muted); margin: 0 0 24px 0; font-size: 15px; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04); }
@@ -20,112 +38,108 @@
     .tab-btn.active { background: var(--primary); color: #ffffff; }
     .form-group { margin-bottom: 14px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     input, select { width: 100%; padding: 11px 13px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; outline: none; background: #ffffff; }
     input:focus, select:focus { border-color: var(--primary); }
-    .submit-btn { width: 100%; background: var(--primary); color: white; font-size: 16px; font-weight: 600; padding: 14px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    .taboo-input { border-color: #fca5a5 !important; background-color: #fffaf0; }
+    .submit-btn { width: 100%; background: var(--primary); color: white; font-size: 16px; font-weight: 600; padding: 14px; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px; }
     .submit-btn:hover { background: var(--primary-hover); }
     .results { margin-top: 28px; }
-    .category-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .category-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 16px; }
     .category-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; display: flex; justify-content: space-between; }
     .hook-box { background: var(--hook-bg); border: 1px solid var(--hook-border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-weight: 700; font-size: 16px; color: #92400e; }
     .section-label { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
     .verse-box { margin-bottom: 16px; line-height: 1.7; font-size: 15px; }
     .chorus-box { background: var(--chorus-bg); border-left: 4px solid var(--chorus-border); padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 16px; line-height: 1.7; font-style: italic; font-weight: 500; }
-    .poem-action-bar { display: flex; gap: 10px; margin-top: 14px; }
+    .poem-action-bar { display: flex; gap: 10px; margin-top: 14px; margin-bottom: 20px; }
     .btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    .empty { text-align: center; color: var(--muted); margin-top: 20px; font-weight: 500; }
+    /* Refine-Bereich */
+    .refine-card { background: var(--refine-bg); border-radius: 10px; padding: 16px; margin-top: 20px; border: 1px solid #cbd5e1; }
+    .refine-flex { display: flex; gap: 8px; }
+    .refine-btn { background: #0f172a; color: white; border: none; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer; }
+    .refine-btn:hover { background: #334155; }
+    .empty { text-align: center; color: var(--muted); margin-top: 20px; }
     .word-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
     .word-chip { display: inline-flex; align-items: center; background: var(--tag-bg); color: var(--primary); font-weight: 600; padding: 6px 12px; border-radius: 6px; font-size: 14px; }
     .speaker-btn { margin-left: 8px; cursor: pointer; opacity: 0.65; }
-    .speaker-btn:hover { opacity: 1; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Smarte Reimemaschine & Lyrik</h1>
-  <p class="subtitle">Schreibe klassische Gedichte oder strukturierte Songs.</p>
+  <h1>Smarte Reimemaschine & Song-Studio</h1>
+  <p class="subtitle">Texte verfassen, Tabus ausschließen und interaktiv verfeinern.</p>
 
   <div class="card">
     <div class="tab-nav">
-      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Text verfassen</button>
-      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Reime suchen</button>
+      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Song / Gedicht erstellen</button>
+      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Reimwörter finden</button>
     </div>
 
-    <!-- Modus 1: Song & Gedicht -->
+    <!-- Generator -->
     <div id="poemMode">
-      <div class="grid-3">
+      <div class="grid-2">
         <div>
-          <label>Thema</label>
+          <label>Vibe / Richtung</label>
           <select id="poemTheme">
-            <option value="Hochzeit & Liebe">Liebe & Partnerschaft</option>
-            <option value="Geburtstag">Geburtstag & Jubiläum</option>
-            <option value="Rock & Punk Song">Rock & Punk Song</option>
-            <option value="Lustig & Frech">Lustig & Frech</option>
-            <option value="Abschied">Abschied</option>
-            <option value="Natur & Poesie">Natur & Poesie</option>
+            <option value="Punkrock & Alternativ">Punkrock & Alternativ</option>
+            <option value="Rock & Singer-Songwriter">Rock & Singer-Songwriter</option>
+            <option value="Liebe & Verbundenheit (ohne Kitsch)">Liebe (ungeschminkt, ehrlich)</option>
+            <option value="Freundschaft & Roadtrip">Roadtrip & Freiheit</option>
+            <option value="Lustig & Selbstironisch">Humorvoll & Frech</option>
+            <option value="Freies Thema">Freies Thema</option>
           </select>
         </div>
         <div>
-          <label>Gedichtform</label>
+          <label>Aufbau</label>
           <select id="poemStyle">
-            <option value="Songtext (Strophen + Refrain + Hook)">Song (Refrain & Hook)</option>
-            <option value="Klassischer Paarreim (AABB)" selected>Klassischer Paarreim</option>
+            <option value="Songtext (Strophen + Refrain + Hook)" selected>Song (Strophen, Chorus & Hook)</option>
+            <option value="Klassischer Paarreim (AABB)">Klassisches Gedicht (AABB)</option>
             <option value="Kreuzreim (ABAB)">Kreuzreim (ABAB)</option>
-            <option value="Freier Vers">Freier Vers (ohne Zwang)</option>
-            <option value="Haiku">Haiku (Japanisch)</option>
-            <option value="Elfchen">Elfchen (5 Zeilen)</option>
-          </select>
-        </div>
-        <div>
-          <label>Länge (ca.)</label>
-          <select id="poemLinesCount">
-            <option value="2">2 Zeilen</option>
-            <option value="4">4 Zeilen (1 Strophe)</option>
-            <option value="8" selected>8 Zeilen (2 Strophen)</option>
-            <option value="12">12 Zeilen (3 Strophen)</option>
-            <option value="16">16 Zeilen (4 Strophen)</option>
+            <option value="Haiku">Haiku</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Details & Stichpunkte (Name, Anlass, Story)</label>
-        <input type="text" id="poemDetails" placeholder="z. B. für Angie, Punkrock, schlaflose Nächte">
-      </div>
-
-      <div class="form-group">
-        <label>Pflichtwörter (optional)</label>
-        <input type="text" id="poemKeywords" placeholder="z. B. Herz, Traum, Beat">
+        <label>Worum geht es genau? (Geschichte, Name, Stimmung)</label>
+        <input type="text" id="poemDetails" placeholder="z. B. Song für Angie: Punkrockerin, Nachtmensch, laute Verstärker">
       </div>
 
       <div class="grid-2">
         <div>
-          <label>Erste Zeile (optional)</label>
-          <input type="text" id="poemFirstLine" placeholder="z. B. Ein Blick von dir genügt...">
+          <label>Pflichtwörter (müssen rein)</label>
+          <input type="text" id="poemKeywords" placeholder="z. B. Bass, Nacht, Treueschwur">
+        </div>
+        <div>
+          <label style="color: #b91c1c;">⛔ Tabu-Themen / Nicht erwähnen</label>
+          <input type="text" id="poemExclude" class="taboo-input" placeholder="z. B. Hochzeit, Heirat, Ringe, Kirche, Kitsch">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Eigene erste Zeile (optional)</label>
+          <input type="text" id="poemFirstLine" placeholder="z. B. Der Amp brummt leise im Raum...">
         </div>
         <div>
           <label>Sprache</label>
           <select id="poemLang">
             <option value="de" selected>Deutsch</option>
             <option value="en">Englisch</option>
-            <option value="es">Spanisch</option>
-            <option value="fr">Französisch</option>
           </select>
         </div>
       </div>
 
-      <button class="submit-btn" onclick="generatePoem()">Werk erschaffen 🖋️</button>
+      <button class="submit-btn" onclick="generatePoem()">Songtext erschaffen 🎶</button>
     </div>
 
-    <!-- Modus 2: Wortsuche -->
+    <!-- Wortsuche -->
     <div id="wordMode" style="display: none;">
       <div class="grid-2">
         <div>
           <label>Suchwort</label>
-          <input type="text" id="wordInput" placeholder="z. B. Nacht, Herz...">
+          <input type="text" id="wordInput" placeholder="z. B. Nacht, Schall...">
         </div>
         <div>
           <label>Sprache</label>
@@ -143,6 +157,7 @@
 </div>
 
 <script>
+  let currentSongData = null;
   let currentFullText = "";
 
   function switchTab(tab) {
@@ -156,90 +171,118 @@
   async function generatePoem() {
     const theme = document.getElementById('poemTheme').value;
     const style = document.getElementById('poemStyle').value;
-    const linesCount = document.getElementById('poemLinesCount').value;
     const details = document.getElementById('poemDetails').value.trim();
     const keywords = document.getElementById('poemKeywords').value.trim();
+    const exclude_words = document.getElementById('poemExclude').value.trim();
     const firstLine = document.getElementById('poemFirstLine').value.trim();
     const lang = document.getElementById('poemLang').value;
     const container = document.getElementById('results');
 
-    container.innerHTML = '<p class="empty">Die KI schreibt den Text...</p>';
+    container.innerHTML = '<p class="empty">Songwriter schreibt den Text...</p>';
 
-    const params = new URLSearchParams({ theme, poem_style: style, lines_count: linesCount, lang });
+    const params = new URLSearchParams({ theme, poem_style: style, lang });
     if (details) params.append('details', details);
     if (keywords) params.append('keywords', keywords);
+    if (exclude_words) params.append('exclude_words', exclude_words);
     if (firstLine) params.append('first_line', firstLine);
 
     try {
       const res = await fetch(`/api/generate-poem?${params.toString()}`);
       const data = await res.json();
-
       if (data.error || !data.result) {
         container.innerHTML = `<p class="empty">Fehler: ${data.error || 'Erstellung fehlgeschlagen.'}</p>`;
         return;
       }
-
-      const result = data.result;
-      let textParts = [];
-      let outputHtml = '';
-      const isSong = style.includes("Songtext");
-
-      // 1. Hookline (nur anzeigen, wenn vorhanden)
-      if (result.hookline && result.hookline.trim() !== "") {
-        textParts.push(`Hookline: ${result.hookline}`);
-        outputHtml += `
-          <div class="section-label">⚡ Hookline / Slogan</div>
-          <div class="hook-box">${result.hookline}</div>
-        `;
-      }
-
-      // 2. Strophen & Refrain zusammensetzen
-      const verses = result.verses || [];
-      const chorus = result.chorus || [];
-
-      verses.forEach((verseLines, idx) => {
-        const verseLabel = isSong ? `[Strophe ${idx + 1}]` : '';
-        if (verseLabel) textParts.push(verseLabel);
-        textParts.push(verseLines.join('\n'));
-        
-        if (isSong) {
-            outputHtml += `<div class="section-label">Strophe ${idx + 1}</div>`;
-        }
-        outputHtml += `<div class="verse-box">${verseLines.map(l => `<div>${l}</div>`).join('')}</div>`;
-
-        // Refrain nach Strophen einblenden (wenn vorhanden)
-        if (chorus.length > 0 && isSong) {
-          if (idx === 0) textParts.push(`[Refrain]\n` + chorus.join('\n'));
-          outputHtml += `
-            <div class="section-label">Refrain (Chorus)</div>
-            <div class="chorus-box">${chorus.map(l => `<div>${l}</div>`).join('')}</div>
-          `;
-        }
-      });
-
-      currentFullText = textParts.join('\n\n');
-
-      container.innerHTML = `
-        <div class="category-block">
-          <div class="category-title">
-            <span>${style.split(' ')[0]}</span>
-            <span>Thema: ${theme}</span>
-          </div>
-          ${outputHtml}
-          <div class="poem-action-bar">
-            <button class="btn-secondary" onclick="speakText(currentFullText, '${lang}')">🔊 Text vorlesen</button>
-            <button class="btn-secondary" onclick="copySong()">📋 Text kopieren</button>
-          </div>
-        </div>
-      `;
+      currentSongData = data.result;
+      renderSongOutput(data.result, theme, style, lang);
     } catch (e) {
       container.innerHTML = '<p class="empty">Verbindungsfehler zum Server.</p>';
     }
   }
 
+  function renderSongOutput(song, theme, style, lang) {
+    const container = document.getElementById('results');
+    let textParts = [];
+    let outputHtml = '';
+
+    if (song.hookline) {
+      textParts.push(`Hookline: ${song.hookline}`);
+      outputHtml += `<div class="section-label">⚡ Hookline / Refrain-Kern</div><div class="hook-box">${song.hookline}</div>`;
+    }
+
+    (song.verses || []).forEach((verseLines, idx) => {
+      textParts.push(`[Strophe ${idx + 1}]\n` + verseLines.join('\n'));
+      outputHtml += `<div class="section-label">Strophe ${idx + 1}</div><div class="verse-box">${verseLines.map(l => `<div>${l}</div>`).join('')}</div>`;
+
+      if (song.chorus && song.chorus.length > 0) {
+        if (idx === 0) textParts.push(`[Refrain]\n` + song.chorus.join('\n'));
+        outputHtml += `<div class="section-label">Refrain</div><div class="chorus-box">${song.chorus.map(l => `<div>${l}</div>`).join('')}</div>`;
+      }
+    });
+
+    currentFullText = textParts.join('\n\n');
+
+    container.innerHTML = `
+      <div class="category-block">
+        <div class="category-title">
+          <span>${style}</span>
+          <span>${theme}</span>
+        </div>
+        ${outputHtml}
+        <div class="poem-action-bar">
+          <button class="btn-secondary" onclick="speakText(currentFullText, '${lang}')">🔊 Kompletten Song vorlesen</button>
+          <button class="btn-secondary" onclick="copySong()">📋 Text kopieren</button>
+        </div>
+
+        <!-- Nachbearbeitungs-Bereich -->
+        <div class="refine-card">
+          <label style="color: #334155;">✨ Song nachbessern / umschreiben lassen</label>
+          <div class="refine-flex">
+            <input type="text" id="refineInput" placeholder="z. B. Mach den Chorus aggressiver / Lass das Wort 'Traum' weg...">
+            <button class="refine-btn" onclick="refineCurrentSong('${lang}')">Überarbeiten</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function refineCurrentSong(lang) {
+    const instruction = document.getElementById('refineInput').value.trim();
+    const exclude_words = document.getElementById('poemExclude').value.trim();
+    if (!instruction) return;
+
+    const container = document.getElementById('results');
+    const oldHtml = container.innerHTML;
+    container.innerHTML = '<p class="empty">Schreibe den Song nach deinen Wünschen um...</p>';
+
+    try {
+      const res = await fetch('/api/refine-poem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          current_song: currentSongData,
+          instruction: instruction,
+          exclude_words: exclude_words,
+          lang: lang
+        })
+      });
+      const data = await res.json();
+      if (data.result) {
+        currentSongData = data.result;
+        renderSongOutput(data.result, "Überarbeitete Version", "Songtext", lang);
+      } else {
+        alert("Konnte Text nicht umschreiben: " + (data.error || ""));
+        container.innerHTML = oldHtml;
+      }
+    } catch (e) {
+      alert("Fehler beim Senden an den Server.");
+      container.innerHTML = oldHtml;
+    }
+  }
+
   function copySong() {
     navigator.clipboard.writeText(currentFullText);
-    alert("Kopiert!");
+    alert("Text kopiert!");
   }
 
   async function findRhymes() {
@@ -287,10 +330,9 @@
 
   function speakText(text, lang) {
     if (!('speechSynthesis' in window)) return;
-    const mapping = { de: 'de-DE', en: 'en-US', es: 'es-ES', fr: 'fr-FR' };
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = mapping[lang] || 'de-DE';
+    u.lang = lang === 'en' ? 'en-US' : 'de-DE';
     u.rate = 0.95;
     window.speechSynthesis.speak(u);
   }

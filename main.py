@@ -4,6 +4,7 @@ import re
 from typing import Optional
 from fastapi import FastAPI, Query
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 from google import genai
 from google.genai import types
 
@@ -43,12 +44,8 @@ def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
     language_name = LANG_NAMES.get(lang.lower(), "Deutsch")
     prompt = f"""
     Finde hochwertige Reime auf das Wort '{word}' in der Sprache: {language_name}.
-    Kategorisiere streng in:
-    "exact" (reine Reime),
-    "near" (unreine Reime/Assonanzen),
-    "multisyllable" (mehrsilbige Reime).
-
-    Gib NUR folgendes JSON-Format zurück:
+    Kategorisiere in: "exact", "near", "multisyllable".
+    Gib NUR folgendes JSON zurück:
     {{
       "exact": ["Wort1", "Wort2"],
       "near": ["Wort1", "Wort2"],
@@ -56,9 +53,8 @@ def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
     }}
     """
     try:
-        # Hier ist das korrekte Modell 3.6 eingetragen
         response = ai_client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-2.5-flash',
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )
@@ -69,10 +65,11 @@ def find_rhymes(word: str = Query(..., min_length=1), lang: str = Query("de")):
 
 @app.get("/api/generate-poem")
 def generate_poem(
-    theme: str = Query("Geburtstag"),
-    poem_style: str = Query("Klassisches Gedicht"),
+    theme: str = Query("Freies Thema"),
+    poem_style: str = Query("Songtext (Strophen + Refrain + Hook)"),
     details: Optional[str] = Query(None),
     keywords: Optional[str] = Query(None),
+    exclude_words: Optional[str] = Query(None),
     first_line: Optional[str] = Query(None),
     lines_count: int = Query(8),
     lang: str = Query("de")
@@ -84,47 +81,85 @@ def generate_poem(
 
     prompt = f"""
     Du bist Songwriter und Lyriker in {language_name}.
-    Erstelle ein lyrisches Werk (Gedicht oder Song) passend zu:
-    - Thema: {theme}
+    Erstelle ein stimmiges Werk:
+    - Thema/Vibe: {theme}
     - Form/Stil: {poem_style}
-    - Länge/Umfang: Ungefähr {lines_count} Zeilen insgesamt (außer bei festen Formen wie Haiku/Elfchen).
-    - Details: {details or 'Allgemein passend'}
+    - Hintergrund/Details: {details or 'Frei passend'}
     - Pflichtwörter: {keywords or 'Keine'}
     """
+    if exclude_words:
+        prompt += f"\n- TABUS / VERBOTEN (DARF NICHT VORKOMMEN): {exclude_words}. Verwende keine dieser Wörter oder Motive!"
     if first_line:
-        prompt += f"\n- Die allererste Textzeile MUSS exakt so lauten: '{first_line}'."
+        prompt += f"\n- Erste Zeile MUSS lauten: '{first_line}'."
 
     prompt += """
-    WICHTIG: Antworte AUSSCHLIESSLICH als valides JSON-Objekt in exakt dieser Struktur:
+    Antworte AUSSCHLIESSLICH als valides JSON-Objekt:
     {
-      "hookline": "Eine Hookline oder ein Titel (nur wenn 'Song' als Stil gewählt wurde, sonst leer lassen)",
+      "hookline": "Prägnante Hookline/Slogan",
       "verses": [
-        ["Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"], 
-        ["Strophe 2 Zeile 1", "Strophe 2 Zeile 2", "Strophe 2 Zeile 3", "Strophe 2 Zeile 4"]
+        ["Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"],
+        ["Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"]
       ],
       "chorus": [
-        "Refrain Zeile 1", "Refrain Zeile 2"
+        "Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4"
       ]
     }
-    Hinweis: Wenn ein normales Gedicht (Paarreim, Haiku etc.) gefordert ist, lass 'chorus' und 'hookline' einfach weg oder mach sie leer und fülle nur das 'verses'-Array mit den Strophen.
     """
 
     try:
-        # Hier ist das korrekte Modell 3.6 eingetragen
         response = ai_client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-2.5-flash',
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )
         data = extract_json_data(response.text)
-        
-        # Falls die KI aus Versehen nur ein flaches Array liefert (Fallback)
-        if isinstance(data, list):
-            data = {"hookline": "", "verses": [data], "chorus": []}
+        return {"theme": theme, "result": data}
+    except Exception as e:
+        return {"error": f"Serverfehler: {str(e)}", "result": None}
 
-        if data and ("verses" in data or "chorus" in data):
-            return {"theme": theme, "result": data}
-        return {"error": "Konnte kein valides Format erzeugen.", "result": None}
+class RefineRequest(BaseModel):
+    current_song: dict
+    instruction: str
+    exclude_words: Optional[str] = None
+    lang: Optional[str] = "de"
+
+@app.post("/api/refine-poem")
+def refine_poem(req: RefineRequest):
+    if not ai_client:
+        return {"error": "API-Schlüssel fehlt.", "result": None}
+
+    language_name = LANG_NAMES.get(req.lang.lower(), "Deutsch")
+
+    prompt = f"""
+    Du bist Songwriter in {language_name}.
+    Überarbeite den folgenden bestehenden Text anhand des Nutzerfeedbacks.
+    
+    Aktueller Stand:
+    {json.dumps(req.current_song, ensure_ascii=False)}
+    
+    Änderungswunsch des Nutzers:
+    "{req.instruction}"
+    """
+    if req.exclude_words:
+        prompt += f"\nZUSÄTZLICHE TABUS (Darf keinesfalls vorkommen): {req.exclude_words}"
+
+    prompt += """
+    Behalte die JSON-Struktur exakt bei:
+    {
+      "hookline": "...",
+      "verses": [["..."]],
+      "chorus": ["..."]
+    }
+    """
+
+    try:
+        response = ai_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(response_mime_type="application/json")
+        )
+        data = extract_json_data(response.text)
+        return {"result": data}
     except Exception as e:
         return {"error": f"Serverfehler: {str(e)}", "result": None}
 
