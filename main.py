@@ -39,7 +39,7 @@ def extract_json_data(text: str):
 
 def call_gemini(prompt: str):
     # Nutzt primär das von Google verlangte gemini-3.6-flash
-    models = ['gemini-1.5-flash']
+    models = ['gemini-3.6-flash']
     for model_name in models:
         try:
             return ai_client.models.generate_content(
