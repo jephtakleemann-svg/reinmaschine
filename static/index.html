@@ -434,12 +434,16 @@
       const res = await fetch(`/api/rhyme?${params.toString()}`);
       const data = await res.json();
       const cat = data.categories || {};
+const data = await res.json();
+    const cat = data.categories || {};
+    const exact = cat.exact || [];
+    const multisyllable = cat.multisyllable || [];
+    const near = cat.near || [];
 
-      let html = '';
-      if (cat.exact?.length) html += renderWordBlock('Exakte Reime', cat.exact, lang);
-      if (cat.multisyllable?.length) html += renderWordBlock('Mehrsilbige Reime', cat.multisyllable, lang);
-      if (cat.near?.length) html += renderWordBlock('Halbreime', cat.near, lang);
-
+    let html = '';
+    if (exact.length) html += renderWordBlock('Exakte Reime', exact, lang);
+    if (multisyllable.length) html += renderWordBlock('Mehrsilbige Reime', multisyllable, lang);
+    if (near.length) html += renderWordBlock('Halbreime', near, lang);
       container.innerHTML = html || '<p class="empty">Keine Reime gefunden.</p>';
     } catch (e) {
       container.innerHTML = '<p class="empty">Verbindungsfehler zum Server.</p>';
