@@ -47,7 +47,8 @@ def call_gemini(prompt: str):
                 contents=prompt,
                 config={"response_mime_type": "application/json"}
             )
-        except Exception as e:
+      except Exception as e:
+            print(f"DEBUG FEHLER BEI MODELL {model_name}: {repr(e)}")
             if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e):
                 time.sleep(1)
                 continue
