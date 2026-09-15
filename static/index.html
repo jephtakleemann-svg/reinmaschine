@@ -3,35 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smarte Reimemaschine & Lyrik-Generator</title>
-  <meta name="description" content="Lyrik, Gedichte und Reime per KI.">
+  <title>Smarte Reimemaschine & Song-Generator</title>
   <style>
     :root {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --tag-bg: #eef2ff;
-      --tag-hover: #e0e7ff;
+      --bg: #f8fafc; --card: #ffffff; --primary: #4f46e5; --primary-hover: #4338ca;
+      --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --tag-bg: #eef2ff; --tag-hover: #e0e7ff;
+      --chorus-bg: #f5f3ff; --chorus-border: #c4b5fd; --hook-bg: #fef3c7; --hook-border: #fcd34d;
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 36px 16px;
-      display: flex;
-      justify-content: center;
-    }
-    .container { width: 100%; max-width: 700px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 36px 16px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 720px; }
     h1 { font-size: 28px; font-weight: 800; text-align: center; margin: 0 0 6px 0; }
     .subtitle { text-align: center; color: var(--muted); margin: 0 0 24px 0; font-size: 15px; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04); }
     .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; }
-    .tab-btn { flex: 1; padding: 10px 14px; font-size: 14px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; background: #e2e8f0; color: var(--muted); transition: all 0.15s ease; }
+    .tab-btn { flex: 1; padding: 10px 14px; font-size: 14px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; background: #e2e8f0; color: var(--muted); }
     .tab-btn.active { background: var(--primary); color: #ffffff; }
     .form-group { margin-bottom: 14px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
@@ -39,83 +24,87 @@
     label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     input, select { width: 100%; padding: 11px 13px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; outline: none; background: #ffffff; }
     input:focus, select:focus { border-color: var(--primary); }
-    .submit-btn { width: 100%; background: var(--primary); color: white; font-size: 16px; font-weight: 600; padding: 14px; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-top: 10px; }
+    .submit-btn { width: 100%; background: var(--primary); color: white; font-size: 16px; font-weight: 600; padding: 14px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
     .submit-btn:hover { background: var(--primary-hover); }
     .results { margin-top: 28px; }
-    .category-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
-    .category-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; }
-    .word-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
-    .word-chip { display: inline-flex; align-items: center; background: var(--tag-bg); color: var(--primary); font-weight: 600; padding: 6px 12px; border-radius: 6px; font-size: 14px; cursor: pointer; }
-    .word-chip:hover { background: var(--tag-hover); }
-    .speaker-btn { margin-left: 8px; font-size: 14px; opacity: 0.65; cursor: pointer; }
-    .poem-box { background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 22px; line-height: 1.8; font-size: 16px; font-style: italic; color: #1e293b; margin-bottom: 16px; white-space: pre-wrap; }
+    .category-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .category-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; display: flex; justify-content: space-between; }
+    .hook-box { background: var(--hook-bg); border: 1px solid var(--hook-border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-weight: 700; font-size: 16px; color: #92400e; }
+    .section-label { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+    .verse-box { margin-bottom: 16px; line-height: 1.7; font-size: 15px; }
+    .chorus-box { background: var(--chorus-bg); border-left: 4px solid var(--chorus-border); padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 16px; line-height: 1.7; font-style: italic; font-weight: 500; }
     .poem-action-bar { display: flex; gap: 10px; margin-top: 14px; }
     .btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    .btn-secondary:hover { background: #e2e8f0; }
-    .empty { text-align: center; color: var(--muted); margin-top: 20px; font-weight: 500;}
+    .empty { text-align: center; color: var(--muted); margin-top: 20px; font-weight: 500; }
+    .word-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+    .word-chip { display: inline-flex; align-items: center; background: var(--tag-bg); color: var(--primary); font-weight: 600; padding: 6px 12px; border-radius: 6px; font-size: 14px; }
+    .speaker-btn { margin-left: 8px; cursor: pointer; opacity: 0.65; }
+    .speaker-btn:hover { opacity: 1; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Smarte Reimemaschine & Lyrik</h1>
-  <p class="subtitle">Ein Wort reimt sich nie allein – schreibe ganze Gedichte nach Maß.</p>
-  
+  <p class="subtitle">Schreibe klassische Gedichte oder strukturierte Songs.</p>
+
   <div class="card">
     <div class="tab-nav">
-      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Gedicht / Text dichten</button>
-      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Einzelne Wörter reimen</button>
+      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Text verfassen</button>
+      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Reime suchen</button>
     </div>
 
-    <!-- Modus 1: Gedicht & Lyrik -->
+    <!-- Modus 1: Song & Gedicht -->
     <div id="poemMode">
       <div class="grid-3">
         <div>
           <label>Thema</label>
           <select id="poemTheme">
-            <option value="Geburtstag">Geburtstag</option>
-            <option value="Liebe & Romantik">Liebe & Romantik</option>
+            <option value="Hochzeit & Liebe">Liebe & Partnerschaft</option>
+            <option value="Geburtstag">Geburtstag & Jubiläum</option>
+            <option value="Rock & Punk Song">Rock & Punk Song</option>
             <option value="Lustig & Frech">Lustig & Frech</option>
-            <option value="Abschied">Abschied & Neuanfang</option>
+            <option value="Abschied">Abschied</option>
             <option value="Natur & Poesie">Natur & Poesie</option>
-            <option value="Freies Thema">Freies Thema</option>
           </select>
         </div>
         <div>
           <label>Gedichtform</label>
           <select id="poemStyle">
-            <option value="Klassischer Paarreim (AABB)">Paarreim (AABB)</option>
+            <option value="Songtext (Strophen + Refrain + Hook)">Song (Refrain & Hook)</option>
+            <option value="Klassischer Paarreim (AABB)" selected>Klassischer Paarreim</option>
             <option value="Kreuzreim (ABAB)">Kreuzreim (ABAB)</option>
-            <option value="Haiku (5-7-5 Silben)">Haiku (Japanisch)</option>
-            <option value="Elfchen (11 Wörter, 5 Zeilen)">Elfchen (5 Zeilen)</option>
-            <option value="Freier Vers (ohne Reimzwang)">Freier Vers</option>
+            <option value="Freier Vers">Freier Vers (ohne Zwang)</option>
+            <option value="Haiku">Haiku (Japanisch)</option>
+            <option value="Elfchen">Elfchen (5 Zeilen)</option>
           </select>
         </div>
         <div>
-          <label>Länge</label>
+          <label>Länge (ca.)</label>
           <select id="poemLinesCount">
             <option value="2">2 Zeilen</option>
-            <option value="4" selected>4 Zeilen (1 Strophe)</option>
-            <option value="8">8 Zeilen (2 Strophen)</option>
+            <option value="4">4 Zeilen (1 Strophe)</option>
+            <option value="8" selected>8 Zeilen (2 Strophen)</option>
             <option value="12">12 Zeilen (3 Strophen)</option>
+            <option value="16">16 Zeilen (4 Strophen)</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Worum geht es genau? (Name, Details)</label>
-        <input type="text" id="poemDetails" placeholder="z. B. Für Jens, spielt gerne Jazz-Gitarre und fährt Camper">
+        <label>Details & Stichpunkte (Name, Anlass, Story)</label>
+        <input type="text" id="poemDetails" placeholder="z. B. für Angie, Punkrock, schlaflose Nächte">
       </div>
 
       <div class="form-group">
         <label>Pflichtwörter (optional)</label>
-        <input type="text" id="poemKeywords" placeholder="z. B. Stratocaster, Bretagne, Holz">
+        <input type="text" id="poemKeywords" placeholder="z. B. Herz, Traum, Beat">
       </div>
 
       <div class="grid-2">
         <div>
-          <label>Eigene erste Zeile (optional)</label>
-          <input type="text" id="poemFirstLine" placeholder="z. B. Der Camper rollt ans weite Meer...">
+          <label>Erste Zeile (optional)</label>
+          <input type="text" id="poemFirstLine" placeholder="z. B. Ein Blick von dir genügt...">
         </div>
         <div>
           <label>Sprache</label>
@@ -136,15 +125,13 @@
       <div class="grid-2">
         <div>
           <label>Suchwort</label>
-          <input type="text" id="wordInput" placeholder="z. B. Sommer, Herz, Traum...">
+          <input type="text" id="wordInput" placeholder="z. B. Nacht, Herz...">
         </div>
         <div>
           <label>Sprache</label>
           <select id="wordLang">
             <option value="de" selected>Deutsch</option>
             <option value="en">Englisch</option>
-            <option value="es">Spanisch</option>
-            <option value="fr">Französisch</option>
           </select>
         </div>
       </div>
@@ -153,11 +140,10 @@
   </div>
 
   <div class="results" id="results"></div>
-
 </div>
 
 <script>
-  let currentPoemText = "";
+  let currentFullText = "";
 
   function switchTab(tab) {
     document.getElementById('poemMode').style.display = tab === 'poem' ? 'block' : 'none';
@@ -177,7 +163,7 @@
     const lang = document.getElementById('poemLang').value;
     const container = document.getElementById('results');
 
-    container.innerHTML = '<p class="empty">Die KI spitzt die Feder...</p>';
+    container.innerHTML = '<p class="empty">Die KI schreibt den Text...</p>';
 
     const params = new URLSearchParams({ theme, poem_style: style, lines_count: linesCount, lang });
     if (details) params.append('details', details);
@@ -188,32 +174,61 @@
       const res = await fetch(`/api/generate-poem?${params.toString()}`);
       const data = await res.json();
 
-      if (data.error || !data.poem_lines || data.poem_lines.length === 0) {
-        container.innerHTML = `<p class="empty">Fehler: ${data.error || 'Konnte kein Gedicht erstellen.'}</p>`;
+      if (data.error || !data.result) {
+        container.innerHTML = `<p class="empty">Fehler: ${data.error || 'Erstellung fehlgeschlagen.'}</p>`;
         return;
       }
 
-      currentPoemText = data.poem_lines.join('\n');
-      
-      // Optisch Strophenabstände einbauen (bei 8 oder 12 Zeilen)
-      let formattedHtml = '';
-      data.poem_lines.forEach((line, index) => {
-          formattedHtml += `<div>${line}</div>`;
-          if ((index + 1) % 4 === 0 && index + 1 !== data.poem_lines.length && style.includes("Reim")) {
-             formattedHtml += `<br>`; // Leerzeile nach jeder Strophe
-          }
+      const result = data.result;
+      let textParts = [];
+      let outputHtml = '';
+      const isSong = style.includes("Songtext");
+
+      // 1. Hookline (nur anzeigen, wenn vorhanden)
+      if (result.hookline && result.hookline.trim() !== "") {
+        textParts.push(`Hookline: ${result.hookline}`);
+        outputHtml += `
+          <div class="section-label">⚡ Hookline / Slogan</div>
+          <div class="hook-box">${result.hookline}</div>
+        `;
+      }
+
+      // 2. Strophen & Refrain zusammensetzen
+      const verses = result.verses || [];
+      const chorus = result.chorus || [];
+
+      verses.forEach((verseLines, idx) => {
+        const verseLabel = isSong ? `[Strophe ${idx + 1}]` : '';
+        if (verseLabel) textParts.push(verseLabel);
+        textParts.push(verseLines.join('\n'));
+        
+        if (isSong) {
+            outputHtml += `<div class="section-label">Strophe ${idx + 1}</div>`;
+        }
+        outputHtml += `<div class="verse-box">${verseLines.map(l => `<div>${l}</div>`).join('')}</div>`;
+
+        // Refrain nach Strophen einblenden (wenn vorhanden)
+        if (chorus.length > 0 && isSong) {
+          if (idx === 0) textParts.push(`[Refrain]\n` + chorus.join('\n'));
+          outputHtml += `
+            <div class="section-label">Refrain (Chorus)</div>
+            <div class="chorus-box">${chorus.map(l => `<div>${l}</div>`).join('')}</div>
+          `;
+        }
       });
+
+      currentFullText = textParts.join('\n\n');
 
       container.innerHTML = `
         <div class="category-block">
           <div class="category-title">
-            <span>Dein Gedicht</span>
-            <span>${style.split(' ')[0]} / ${data.poem_lines.length} Zeilen</span>
+            <span>${style.split(' ')[0]}</span>
+            <span>Thema: ${theme}</span>
           </div>
-          <div class="poem-box">${formattedHtml}</div>
+          ${outputHtml}
           <div class="poem-action-bar">
-            <button class="btn-secondary" onclick="speakText(currentPoemText, '${lang}')">🔊 Laut vorlesen</button>
-            <button class="btn-secondary" onclick="copyPoem()">📋 Text kopieren</button>
+            <button class="btn-secondary" onclick="speakText(currentFullText, '${lang}')">🔊 Text vorlesen</button>
+            <button class="btn-secondary" onclick="copySong()">📋 Text kopieren</button>
           </div>
         </div>
       `;
@@ -222,8 +237,8 @@
     }
   }
 
-  function copyPoem() {
-    navigator.clipboard.writeText(currentPoemText);
+  function copySong() {
+    navigator.clipboard.writeText(currentFullText);
     alert("Kopiert!");
   }
 
@@ -233,7 +248,7 @@
     const container = document.getElementById('results');
 
     if (!word) {
-      container.innerHTML = '<p class="empty">Bitte gib ein Wort ein.</p>';
+      container.innerHTML = '<p class="empty">Bitte ein Wort eingeben.</p>';
       return;
     }
     container.innerHTML = '<p class="empty">Suche Reime...</p>';
@@ -241,14 +256,12 @@
     try {
       const res = await fetch(`/api/rhyme?word=${encodeURIComponent(word)}&lang=${encodeURIComponent(lang)}`);
       const data = await res.json();
-      const exact = data.categories?.exact || [];
-      const multi = data.categories?.multisyllable || [];
-      const near = data.categories?.near || [];
+      const categories = data.categories || {};
 
       let html = '';
-      if (exact.length) html += renderWordBlock('Exakte Reime', exact, lang);
-      if (multi.length) html += renderWordBlock('Mehrsilbige Reime', multi, lang);
-      if (near.length) html += renderWordBlock('Halbreime', near, lang);
+      if (categories.exact?.length) html += renderWordBlock('Exakte Reime', categories.exact, lang);
+      if (categories.multisyllable?.length) html += renderWordBlock('Mehrsilbige Reime', categories.multisyllable, lang);
+      if (categories.near?.length) html += renderWordBlock('Halbreime', categories.near, lang);
 
       container.innerHTML = html || '<p class="empty">Keine Reime gefunden.</p>';
     } catch (e) {
