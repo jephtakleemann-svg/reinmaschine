@@ -156,80 +156,88 @@
       <button class="submit-btn" onclick="generatePoem()">Gedicht erschaffen 🖋️</button>
     </div>
 
-    <!-- REITER 2: SONG-STUDIO -->
-    <div id="songTab" style="display: none;">
-      <div class="grid-2">
+   <!-- REITER 2: SONG-STUDIO -->
+<div id="songTab" style="display: none;">
+    <div class="grid-2">
         <div>
-          <label>Aufgabe / Was brauchst du?</label>
-          <select id="songTask" onchange="toggleSongInput()">
-            <option value="full_song" selected>Kompletter Song (Strophen, Chorus, Hook)</option>
-            <option value="hook_only">Nur Hookline generieren</option>
-            <option value="chorus_only">Nur Refrain (Chorus) generieren</option>
-            <option value="bridge_only">Nur Bridge (Überleitung) generieren</option>
-            <option value="verses_from_hook">Strophen passend zu meiner Hookline dichten</option>
-            <option value="hook_from_verse">Hookline passend zu meiner Strophe finden</option>
-          </select>
+            <label>Aufgabe / Was brauchst du?</label>
+            <select id="songTask" onchange="toggleSongInput()">
+                <option value="full_song" selected>Kompletter Song (Strophen, Chorus, Hook)</option>
+                <option value="hook_only">Nur Hookline generieren</option>
+                <option value="chorus_only">Nur Refrain (Chorus) generieren</option>
+                <option value="bridge_only">Nur Bridge (Überleitung) generieren</option>
+                <option value="verses_from_hook">Strophen passend zu meiner Hookline dichten</option>
+                <option value="hook_from_verse">Hookline passend zu meiner Strophe finden</option>
+            </select>
         </div>
-       <!-- Spezialfunktion: Erweiterte Dramaturgie Song -->
-<details style="margin-bottom: 15px; font-size: 0.85rem;">
-    <summary style="cursor: pointer; color: var(--muted); user-select: none;">⚙️ Erweiterte Dramaturgie wählen (Spezial)</summary>
-    <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 8px;">
-        <select id="songDramaturgieSelect" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
-            <option value="aber-deshalb" selected>Aber / Deshalb-Methode (Standard)</option>
-            <option value="these-antithese">These / Antithese / Synthese (Dialektisch)</option>
-            <option value="sturm-und-drang">Sturm und Drang (Rau / Direkt)</option>
-            <option value="kreis-dramaturgie">Kreis-Dramaturgie (Hypnotisch / Loop)</option>
-        </select>
+        <div>
+            <label>Musikalischer Vibe / Genre</label>
+            <select id="songVibe">
+                <option value="Punkrock / Schnell & Roh">Punkrock (Roh, direkt, laut)</option>
+                <option value="Post-Punk / New Wave">Post-Punk / New Wave</option>
+                <option value="Indie Rock / Alternative">Indie Rock / Alternative</option>
+                <option value="Pop-Punk / Melodisch & Treibend">Pop-Punk (Melodisch & treibend)</option>
+                <option value="Classic Hard Rock">Classic Rock / Hard Rock</option>
+                <option value="Jazz-Rock / Laid-Back">Jazz-Rock / Laid-Back</option>
+                <option value="Akustisch / Melancholisch">Acoustic / Singer-Songwriter</option>
+                <option value="Hip-Hop / Rap Beat">Hip-Hop / Rap</option>
+            </select>
+        </div>
     </div>
-</details>
-        <div>
-          <label>Musikalischer Vibe / Genre</label>
-          <select id="songVibe">
-            <option value="Punkrock / Schnell & Roh">Punkrock (Roh, direkt, laut)</option>
-            <option value="Post-Punk / New Wave">Post-Punk / New Wave</option>
-            <option value="Indie Rock / Alternative">Indie Rock / Alternative</option>
-            <option value="Pop-Punk / Melodisch & Treibend">Pop-Punk (Melodisch & treibend)</option>
-            <option value="Classic Hard Rock">Classic Rock / Hard Rock</option>
-            <option value="Jazz-Rock / Laid-Back">Jazz-Rock / Laid-Back</option>
-            <option value="Akustisch / Melancholisch">Acoustic / Singer-Songwriter</option>
-            <option value="Hip-Hop / Rap Beat">Hip-Hop / Rap</option>
-          </select>
-        </div>
-      </div>
 
-      <!-- Wird nur eingeblendet, wenn man vorhandenen Text weiterverarbeiten will -->
-      <div class="form-group" id="existingTextGroup" style="display: none;">
+    <!-- Wird nur eingeblendet, wenn man vorhandenen Text weiterverarbeiten will -->
+    <div class="form-group" id="existingTextGroup" style="display: none;">
         <label id="existingTextLabel">Dein vorhandener Text</label>
         <textarea id="songExisting" placeholder="Füge hier deine Zeilen ein..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Story, Person & Hintergrund</label>
-        <input type="text" id="songDetails" placeholder="z. B. Für Angie: laute Verstärker, Nachtfahrten, Treue">
-      </div>
-
-      <div class="grid-2">
-        <div>
-          <label>Pflichtbegriffe</label>
-          <input type="text" id="songKeywords" placeholder="z. B. Feedback, Verzerrer, Tourbus">
-        </div>
-        <div>
-          <label>Tabu-Themen (optional)</label>
-          <input type="text" id="songExclude" placeholder="z. B. Hochzeit, Ringe, Kirche">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Sprache des Songs</label>
-        <select id="songLang">
-          <option value="de" selected>Deutsch</option>
-          <option value="en">Englisch</option>
-        </select>
-      </div>
-
-      <button class="submit-btn" onclick="generateSong()">Song-Material kreieren 🎸</button>
     </div>
 
+    <div class="form-group">
+        <label>Story, Person & Hintergrund</label>
+        <input type="text" id="songDetails" placeholder="z. B. Für Angie: laute Verstärker, Nachtfahrten, Treue">
+    </div>
+
+    <!-- ⚙️ DAS NEUE ZAHNRAD-MENÜ FÜR ERWEITERTE OPTIONEN -->
+    <details style="margin: 20px 0; background: var(--card); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border);">
+        <summary style="cursor: pointer; font-weight: 500; color: var(--muted); user-select: none; font-size: 0.9rem;">
+            ⚙️ Erweiterte Optionen (Dramaturgie, Begriffe & Tabus)
+        </summary>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);">
+            
+            <div>
+                <label style="font-size: 0.85rem;">Dramaturgie / Spannungsbogen</label>
+                <select id="songDramaturgieSelect" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                    <option value="aber-deshalb" selected>Aber / Deshalb-Methode (Standard)</option>
+                    <option value="these-antithese">These / Antithese / Synthese (Dialektisch)</option>
+                    <option value="sturm-und-drang">Sturm und Drang (Rau / Direkt)</option>
+                    <option value="kreis-dramaturgie">Kreis-Dramaturgie (Hypnotisch / Loop)</option>
+                </select>
+            </div>
+
+            <div class="grid-2" style="margin-bottom: 0;">
+                <div>
+                    <label style="font-size: 0.85rem;">Pflichtbegriffe</label>
+                    <input type="text" id="songKeywords" placeholder="z. B. Feedback, Verzerrer">
+                </div>
+                <div>
+                    <label style="font-size: 0.85rem;">Tabu-Themen</label>
+                    <input type="text" id="songExclude" placeholder="z. B. Hochzeit, Kitsch">
+                </div>
+            </div>
+
+        </div>
+    </details>
+
+    <div class="form-group">
+        <label>Sprache des Songs</label>
+        <select id="songLang">
+            <option value="de" selected>Deutsch</option>
+            <option value="en">Englisch</option>
+        </select>
+    </div>
+
+    <button class="submit-btn" onclick="generateSong()">Song-Material kreieren 🎸</button>
+</div>
+    
     <!-- REITER 3: REIMWÖRTER -->
     <div id="wordTab" style="display: none;">
       <div class="form-group">
