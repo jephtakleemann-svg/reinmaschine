@@ -101,6 +101,7 @@ def generate_poem(
     exclude_words: Optional[str] = Query(None),
     lines_count: int = Query(4),
     lang: str = Query("de")
+    dramaturgie: str = Query("aber-deshalb"),
 ):
     if not ai_client:
         return {"error": "API-Schlüssel fehlt.", "poem_lines": []}
@@ -114,6 +115,7 @@ def generate_poem(
     Details: {details or 'Allgemein passend'}
     Pflichtwörter: {keywords or 'Keine'}
     """
+    prompt += f"\nDramaturgie/Stil: {dramaturgie}"
     if exclude_words:
         prompt += f"\nTabus (Nicht verwenden): {exclude_words}"
 
@@ -146,7 +148,8 @@ class SongRequest(BaseModel):
     keywords: Optional[str] = None
     exclude_words: Optional[str] = None
     lang: Optional[str] = "de"
-
+    dramaturgie: Optional[str] = "aber-deshalb"
+    
 @app.post("/api/generate-song")
 def generate_song(req: SongRequest):
     if not ai_client:
@@ -163,6 +166,7 @@ def generate_song(req: SongRequest):
     Details / Story: {req.details or 'Frei passend'}
     Pflichtwörter: {req.keywords or 'Keine'}
     """
+    prompt += f"\nDramaturgie/Stil: {req.dramaturgie}"
     if req.exclude_words:
         prompt += f"\nTabus (Darf nicht vorkommen): {req.exclude_words}"
     if req.existing_text:
