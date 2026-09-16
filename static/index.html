@@ -375,18 +375,20 @@
     }
   }
 
-  function exportToSuno() {
+ function copySongText() {
     if (!currentFullText) {
-        alert('Kein Songtext vorhanden zum Exportieren.');
+        alert('Kein Songtext vorhanden zum Kopieren.');
         return;
     }
     navigator.clipboard.writeText(currentFullText).then(() => {
-        // Öffnet Suno direkt im neuen Tab
-        window.open('https://suno.com/create', '_blank');
+        alert('Songtext wurde in die Zwischenablage kopiert! 📋');
     }).catch(err => {
-        alert('Text konnte nicht automatisch kopiert werden.');
-        window.open('https://suno.com/create', '_blank');
+        alert('Text konnte nicht kopiert werden.');
     });
+}
+
+function openSuno() {
+    window.open('https://suno.com/create', '_blank');
 }
   function renderSongOutput(song, vibe, lang) {
     const container = document.getElementById('results');
