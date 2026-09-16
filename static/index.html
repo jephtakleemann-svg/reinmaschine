@@ -97,16 +97,18 @@
             <option value="Freies Thema">Freies Thema</option>
           </select>
         </div>
-        <!-- Neu: Dramaturgie-Auswahl -->
-            <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
-                <label for="dramaturgieSelect" style="font-size: 0.85rem; font-weight: bold; color: var(--muted);">DRAMATURGIE / STIL</label>
-                <select id="dramaturgieSelect" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
-                    <option value="aber-deshalb">Aber / Deshalb-Methode (Treibend / Dynamisch)</option>
-                    <option value="these-antithese">These / Antithese / Synthese (Dialektisch / Tief)</option>
-                    <option value="sturm-und-drang">Sturm und Drang (Rau / Direkt / Empathisch)</option>
-                    <option value="kreis-dramaturgie">Kreis-Dramaturgie (Hypnotisch / Loop)</option>
-                </select>
-            </div>
+        <!-- Spezialfunktion: Erweiterte Dramaturgie -->
+<details style="margin-bottom: 15px; font-size: 0.85rem;">
+    <summary style="cursor: pointer; color: var(--muted); user-select: none;">⚙️ Erweiterte Dramaturgie wählen (Spezial)</summary>
+    <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 8px;">
+        <select id="dramaturgieSelect" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
+            <option value="aber-deshalb" selected>Aber / Deshalb-Methode (Standard)</option>
+            <option value="these-antithese">These / Antithese / Synthese (Dialektisch)</option>
+            <option value="sturm-und-drang">Sturm und Drang (Rau / Direkt)</option>
+            <option value="kreis-dramaturgie">Kreis-Dramaturgie (Hypnotisch / Loop)</option>
+        </select>
+    </div>
+</details>
         <div>
           <label>Gedichtform</label>
           <select id="poemStyle">
@@ -168,16 +170,18 @@
             <option value="hook_from_verse">Hookline passend zu meiner Strophe finden</option>
           </select>
         </div>
-        <!-- Neu: Dramaturgie-Auswahl für das Song-Studio -->
-            <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
-                <label for="songDramaturgieSelect" style="font-size: 0.85rem; font-weight: bold; color: var(--muted);">DRAMATURGIE / STIL</label>
-                <select id="songDramaturgieSelect" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
-                    <option value="aber-deshalb">Aber / Deshalb-Methode (Treibend / Dynamisch)</option>
-                    <option value="these-antithese">These / Antithese / Synthese (Dialektisch / Tief)</option>
-                    <option value="sturm-und-drang">Sturm und Drang (Rau / Direkt / Empathisch)</option>
-                    <option value="kreis-dramaturgie">Kreis-Dramaturgie (Hypnotisch / Loop)</option>
-                </select>
-            </div>
+       <!-- Spezialfunktion: Erweiterte Dramaturgie Song -->
+<details style="margin-bottom: 15px; font-size: 0.85rem;">
+    <summary style="cursor: pointer; color: var(--muted); user-select: none;">⚙️ Erweiterte Dramaturgie wählen (Spezial)</summary>
+    <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 8px;">
+        <select id="songDramaturgiesSelect" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
+            <option value="aber-deshalb" selected>Aber / Deshalb-Methode (Standard)</option>
+            <option value="these-antithese">These / Antithese / Synthese (Dialektisch)</option>
+            <option value="sturm-und-drang">Sturm und Drang (Rau / Direkt)</option>
+            <option value="kreis-dramaturgie">Kreis-Dramaturgie (Hypnotisch / Loop)</option>
+        </select>
+    </div>
+</details>
         <div>
           <label>Musikalischer Vibe / Genre</label>
           <select id="songVibe">
