@@ -407,41 +407,25 @@
       outputHtml += `<div class="section-label">Bridge</div><div class="bridge-box">${song.bridge.map(l => `<div>${l}</div>`).join('')}</div>`;
     }
 
-    currentFullText = textParts.join('\n\n');
-// Suno-Export-Button am Ende der Song-Ergebnisse anhängen
-    outputHtml += `
-        <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); text-align: center;">
-            <button onclick="exportToSuno()" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); transition: transform 0.2s;">
-                🎧 Text kopieren & zu Suno wechseln
-            </button>
-            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">Kopiert den Songtext in die Zwischenablage und öffnet Suno.</p>
-        </div>
-    `;
+currentFullText = textParts.join('\n\n');
 
-    container.innerHTML = outputHtml;
+    // Alles zusammenpacken: Kasten, Song-Inhalt und direkt darunter der Suno-Button
     container.innerHTML = `
-      <div class="category-block">
-        <div class="category-title">
-          <span>Song-Ergebnis</span>
-          <span>${vibe}</span>
-        </div>
-        ${outputHtml}
-        <div class="action-bar">
-          <button class="btn-secondary" onclick="speakText(currentFullText, '${lang}')">🔊 Song vorlesen</button>
-          <button class="btn-secondary" onclick="copyText()">📋 Text kopieren</button>
-        </div>
-
-        <div class="refine-card">
-          <label style="color: #334155;">✨ Nachbessern / Umschreiben</label>
-          <div class="refine-flex">
-            <input type="text" id="refineInput" placeholder="z. B. Hook griffiger machen / Refrain anpassen...">
-            <button class="refine-btn" onclick="refineSong('${lang}')">Anpassen</button>
+        <div class="category-block">
+          <div class="category-title">
+            <span>Song-Ergebnis</span>
+            <span>${vibe}</span>
+          </div>
+          ${outputHtml}
+          
+          <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); text-align: center;">
+              <button onclick="exportToSuno()" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
+                  🎧 Text kopieren & zu Suno wechseln
+              </button>
           </div>
         </div>
-      </div>
     `;
-  }
-
+}
   async function refineSong(lang) {
     const instruction = document.getElementById('refineInput').value.trim();
     const exclude_words = document.getElementById('songExclude').value.trim();
