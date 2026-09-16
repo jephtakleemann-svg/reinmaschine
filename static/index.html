@@ -353,7 +353,7 @@
       const res = await fetch('/api/generate-song', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task, vibe, existing_text, details, keywords, exclude_words, lang, dramturgie })
+        body: JSON.stringify({ task, vibe, existing_text, details, keywords, exclude_words, lang, dramaturgie })
       });
       const data = await res.json();
       if (data.error || !data.result) {
