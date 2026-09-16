@@ -168,6 +168,16 @@
             <option value="hook_from_verse">Hookline passend zu meiner Strophe finden</option>
           </select>
         </div>
+        <!-- Neu: Dramaturgie-Auswahl für das Song-Studio -->
+            <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                <label for="songDramaturgieSelect" style="font-size: 0.85rem; font-weight: bold; color: var(--muted);">DRAMATURGIE / STIL</label>
+                <select id="songDramaturgieSelect" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
+                    <option value="aber-deshalb">Aber / Deshalb-Methode (Treibend / Dynamisch)</option>
+                    <option value="these-antithese">These / Antithese / Synthese (Dialektisch / Tief)</option>
+                    <option value="sturm-und-drang">Sturm und Drang (Rau / Direkt / Empathisch)</option>
+                    <option value="kreis-dramaturgie">Kreis-Dramaturgie (Hypnotisch / Loop)</option>
+                </select>
+            </div>
         <div>
           <label>Musikalischer Vibe / Genre</label>
           <select id="songVibe">
@@ -331,14 +341,15 @@
     const exclude_words = document.getElementById('songExclude').value.trim();
     const lang = document.getElementById('songLang').value;
     const container = document.getElementById('results');
-
+    const dramaturgie = document.getElementById('songDramaturgieSelect').value;
+    
     container.innerHTML = '<p class="empty">Songwriter arrangiert dein Material...</p>';
 
     try {
       const res = await fetch('/api/generate-song', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task, vibe, existing_text, details, keywords, exclude_words, lang })
+        body: JSON.stringify({ task, vibe, existing_text, details, keywords, exclude_words, lang, dramturgie })
       });
       const data = await res.json();
       if (data.error || !data.result) {
