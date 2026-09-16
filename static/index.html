@@ -496,74 +496,38 @@
   }
 </script>
 
-  
-  <!-- Info Modal / Pop-up -->
-  <div id="infoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background: #ffffff; max-width: 500px; width: 100%; padding: 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); line-height: 1.6; position: relative;">
-      <h3 style="margin-top: 0; color: #1e293b;">Über die Reimfabrik</h3>
-      <p style="color: #475569; font-size: 14px;">
-        Willkommen in deinem digitalen Kreativ-Studio! Hier unterstützen dich moderne KI-Modelle dabei, kreativen Schreibblockaden ein Ende zu setzen.
-      </p>
-      <ul style="color: #475569; font-size: 14px; padding-left: 20px;">
-        <li><strong>Gedichte:</strong> Lass dir individuelle Gedichte zu Wunschthemen, Stimmungen oder in bestimmten Reimschemata generieren.</li>
-        <li><strong>Song-Studio:</strong> Erstelle komplette Songtexte inklusive Strophen und Refrain für deine Musikprojekte.</li>
-        <li><strong>Reimwörter:</strong> Finde im Handumdrehen exakte Reime, Halbreime oder mehrsilbige Reimwörter für ein bestimmtes Suchwort.</li>
-      </ul>
-      <p style="color: #475569; font-size: 14px;">
-        Gib einfach deine Stichwörter ein, wähle das passende Tool und lass die KI die schwere Arbeit machen. Viel Spaß beim Schreiben!
-      </p>
-      <div style="text-align: right; margin-top: 20px;">
-        <button onclick="closeInfoModal()" style="background: #4f46e5; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;">Verstanden</button>
-      </div>
-    </div>
-  </div>
-
-<!-- Zentraler Info-Bereich und Footer -->
-    <footer style="margin-top: 50px; padding: 20px; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--muted);">
+ <!-- Zentraler Info-Bereich und Footer -->
+    <footer style="margin-top: 50px; padding: 20px; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); clear: both;">
         
-        <!-- Die aufklappbare Info-Box (ausführliche Version) -->
+        <!-- Die aufklappbare Info-Box -->
         <details style="margin-bottom: 20px; background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
             <summary style="cursor: pointer; font-weight: bold; color: var(--primary);">
                 ℹ️ Handbuch & Methode: So arbeitet die Reimfabrik
             </summary>
             
             <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px; line-height: 1.5;">
-                
-                <!-- Allgemeine Einführung -->
                 <div style="padding: 12px; background: var(--bg); border-radius: 6px; border-left: 4px solid var(--primary);">
                     <strong>Das Konzept:</strong> 
-                    Die Reimfabrik ist kein klassischer Wörterbuch-Generator, der einfach nur Silben aneinanderreiht. Das Ziel ist es, lebendige, überraschende und rhythmisch funktionierende Texte zu erschaffen. Das Geheimnis dahinter ist die sogenannte <em>"Aber / Deshalb"</em>-Dramaturgie (bekannt aus dem professionellen Storytelling), die verhindert, dass Texte flach oder vorhersehbar klingen.
+                    Die Reimfabrik nutzt die <em>"Aber / Deshalb"</em>-Dramaturgie, um lebendige und überraschende Texte statt flacher Aufzählungen zu erzeugen.
                 </div>
-
-                <!-- Unterordner 1: Gedicht -->
                 <div style="padding: 10px; background: var(--bg); border-radius: 6px;">
-                    <strong>📖 Gedicht-Modus (Erzählende Lyrik):</strong><br>
-                    Anstatt banale Zustände oder reine Beschreibungen aneinanderzureihen, bricht hier jede Strophe mit einer Erwartung. Nach dem Prinzip: <em>Die Szene etabliert sich, **aber** dann geschieht ein Wendepunkt, **deshalb** bricht das lyrische Ich aus oder reagiert unerwartet.</em> Das erzeugt echte emotionale Spannung.
+                    <strong>📖 Gedicht-Modus:</strong> Jede Strophe bricht mit einer Erwartung (Ereignis, <em>aber</em> Wendepunkt, <em>deshalb</em> Reaktion).
                 </div>
-
-                <!-- Unterordner 2: Songtext -->
                 <div style="padding: 10px; background: var(--bg); border-radius: 6px;">
-                    <strong>🎸 Songtext-Studio (Strophe & Refrain):</strong><br>
-                    Gute Songs leben von Kontrasten. Die Strophen schildern ein Problem oder eine Reibung (das "Aber"), während der Refrain die emotionale Entladung oder den treibenden Ausweg liefert (das "Deshalb"). So greifen Rhythmus und Inhalt perfekt ineinander.
+                    <strong>🎸 Songtext-Studio:</strong> Strophen bauen Konflikte auf (das "Aber"), der Refrain liefert die emotionale Entladung (das "Deshalb").
                 </div>
-
-                <!-- Unterordner 3: Reimwörter -->
                 <div style="padding: 10px; background: var(--bg); border-radius: 6px;">
-                    <strong>🔤 Reimwörter-Generator (Kreativ-Tool):</strong><br>
-                    Liefert nicht nur simple Reimpaare, sondern schlägt Begriffe vor, die thematische Haken schlagen. So bleibst du beim Schreiben flexibel und wirst zu ungewöhnlichen Metaphern inspiriert, statt im Reim-Einheitsbrei stecken zu bleiben.
+                    <strong>🔤 Reimwörter-Generator:</strong> Liefert kreative Begriffe für unerwartete Wendungen im Text.
                 </div>
-
             </div>
         </details>
 
-        <!-- Footer-Zeile mit Impressum, Datenschutz und Buy Me a Coffee -->
+        <!-- Footer-Zeile -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
                 <a href="/impressum" style="color: var(--primary); text-decoration: none; margin-right: 15px;">Impressum</a>
                 <a href="/datenschutz" style="color: var(--primary); text-decoration: none;">Datenschutz</a>
             </div>
-            
-            <!-- Dein Buy-Me-a-Coffee-Button ganz dezent platziert -->
             <div>
                 <a href="https://buymeacoffee.com/reimfabrik" target="_blank" style="display: inline-flex; align-items: center; background: #FFDD00; color: #000000; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem;">
                     ☕ Unterstütze das Projekt
@@ -571,46 +535,6 @@
             </div>
         </div>
     </footer>
-
-        <!-- Footer-Zeile mit Impressum, Datenschutz und Buy Me a Coffee -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div>
-                <a href="/impressum" style="color: var(--primary); text-decoration: none; margin-right: 15px;">Impressum</a>
-                <a href="/datenschutz" style="color: var(--primary); text-decoration: none;">Datenschutz</a>
-            </div>
-            
-            <!-- Dein Buy-Me-a-Coffee-Button ganz dezent platziert -->
-            <div>
-                <a href="https://buymeacoffee.com/reimfabrik" target="_blank" style="display: inline-flex; align-items: center; background: #FFDD00; color: #000000; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem;">
-                    ☕ Unterstütze das Projekt
-                </a>
-            </div>
-        </div>
-    </footer>
-
-        <!-- Footer-Zeile mit Impressum, Datenschutz und Buy Me a Coffee -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div>
-                <a href="/impressum" style="color: var(--primary); text-decoration: none; margin-right: 15px;">Impressum</a>
-                <a href="/datenschutz" style="color: var(--primary); text-decoration: none;">Datenschutz</a>
-            </div>
-            
-            <!-- Dein Buy-Me-a-Coffee-Button ganz dezent platziert -->
-            <div>
-                <a href="https://buymeacoffee.com/reimfabrik" target="_blank" style="display: inline-flex; align-items: center; background: #FFDD00; color: #000000; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem;">
-                    ☕ Unterstütze das Projekt
-                </a>
-            </div>
-        </div>
-    </footer>
-  
-  <!-- Footer mit Impressum & Datenschutz -->
-  <footer style="text-align: center; margin: 40px 0 20px 0; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 13px;">
-    <span style="color: #64748b;">© Reimfabrik</span>
-    <span style="color: #cbd5e1; margin: 0 10px;">•</span>
-    <a href="/impressum.html" style="color: #4f46e5; text-decoration: none; margin-right: 15px;">Impressum</a>
-    <a href="/datenschutz.html" style="color: #4f46e5; text-decoration: none;">Datenschutz</a>
-  </footer>
   
 </body>
 </html>
