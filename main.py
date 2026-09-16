@@ -100,7 +100,7 @@ def generate_poem(
     keywords: Optional[str] = Query(None),
     exclude_words: Optional[str] = Query(None),
     lines_count: int = Query(4),
-    lang: str = Query("de")
+    lang: str = Query("de"),
     dramaturgie: str = Query("aber-deshalb"),
 ):
     if not ai_client:
