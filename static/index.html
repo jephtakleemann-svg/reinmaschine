@@ -367,6 +367,19 @@
     }
   }
 
+  function exportToSuno() {
+    if (!currentFullText) {
+        alert('Kein Songtext vorhanden zum Exportieren.');
+        return;
+    }
+    navigator.clipboard.writeText(currentFullText).then(() => {
+        // Öffnet Suno direkt im neuen Tab
+        window.open('https://suno.com/create', '_blank');
+    }).catch(err => {
+        alert('Text konnte nicht automatisch kopiert werden.');
+        window.open('https://suno.com/create', '_blank');
+    });
+}
   function renderSongOutput(song, vibe, lang) {
     const container = document.getElementById('results');
     let textParts = [];
@@ -395,7 +408,17 @@
     }
 
     currentFullText = textParts.join('\n\n');
+// Suno-Export-Button am Ende der Song-Ergebnisse anhängen
+    outputHtml += `
+        <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); text-align: center;">
+            <button onclick="exportToSuno()" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); transition: transform 0.2s;">
+                🎧 Text kopieren & zu Suno wechseln
+            </button>
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">Kopiert den Songtext in die Zwischenablage und öffnet Suno.</p>
+        </div>
+    `;
 
+    container.innerHTML = outputHtml;
     container.innerHTML = `
       <div class="category-block">
         <div class="category-title">
