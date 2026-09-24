@@ -101,15 +101,14 @@
   <h1>Reim- & Song-Studio</h1>
   <p class="subtitle">Drei fokussierte Werkzeuge für Lyrik, Songwriting und Reime.</p>
 
-  <div class="card">
-    <div class="tab-nav">
-      <button class="tab-btn active" id="tabPoemBtn" onclick="switchTab('poem')">Gedicht</button>
-      <button class="tab-btn" id="tabSongBtn" onclick="switchTab('song')">Song-Studio</button>
-      <button class="tab-btn" id="tabWordBtn" onclick="switchTab('word')">Reimwörter</button>
-    </div>
+  <div class="tab-nav">
+  <button class="tab-btn" id="tabPoemBtn" onclick="switchTab('poem')">Gedicht</button>
+  <button class="tab-btn" id="tabSongBtn" onclick="switchTab('song')">Song-Studio</button>
+  <button class="tab-btn active" id="tabWordBtn" onclick="switchTab('word')">Reimwörter</button>
+</div>
 
     <!-- REITER 1: GEDICHT -->
-    <div id="poemTab">
+    <div id="poemTab" style="display: none;">
       <div class="grid-3">
         <div>
           <label>Thema</label>
@@ -264,7 +263,7 @@
 </div>
     
     <!-- REITER 3: REIMWÖRTER -->
-    <div id="wordTab" style="display: none;">
+    <div id="wordTab" style="display: block;">
       <div class="form-group">
         <label>Suchwort</label>
         <input type="text" id="wordInput" placeholder="z. B. Beat, Sound, Scheinwerferlicht...">
