@@ -101,13 +101,34 @@
   <h1>Reim- & Song-Studio</h1>
   <p class="subtitle">Drei fokussierte Werkzeuge für Lyrik, Songwriting und Reime.</p>
 
-  <div class="tab-nav">
+<div class="tab-nav">
+  <button class="tab-btn active" id="tabWordBtn" onclick="switchTab('word')">Reimwörter</button>
   <button class="tab-btn" id="tabPoemBtn" onclick="switchTab('poem')">Gedicht</button>
   <button class="tab-btn" id="tabSongBtn" onclick="switchTab('song')">Song-Studio</button>
-  <button class="tab-btn active" id="tabWordBtn" onclick="switchTab('word')">Reimwörter</button>
 </div>
 
-    <!-- REITER 1: GEDICHT -->
+ <!-- REITER 1: REIMWÖRTER -->
+    <div id="wordTab" style="display: block;">
+      <div class="form-group">
+        <label>Suchwort</label>
+        <input type="text" id="wordInput" placeholder="z. B. Beat, Sound, Scheinwerferlicht...">
+      </div>
+      <div class="form-group">
+        <label>Thema / Kontext (optional)</label>
+        <input type="text" id="wordTheme" placeholder="z. B. Rockmusik, Liebe, Natur...">
+      </div>
+      <div class="form-group">
+        <label>Sprache</label>
+        <select id="wordLang">
+          <option value="de" selected>Deutsch</option>
+          <option value="en">Englisch</option>
+        </select>
+      </div>
+      <button class="submit-btn" onclick="findRhymes()">Reime filtern 🔍</button>
+    </div>
+    
+    
+    <!-- REITER 2: GEDICHT -->
     <div id="poemTab" style="display: none;">
       <div class="grid-3">
         <div>
@@ -180,7 +201,7 @@
       <button class="submit-btn" onclick="generatePoem()">Gedicht erschaffen 🖋️</button>
     </div>
 
-   <!-- REITER 2: SONG-STUDIO -->
+   <!-- REITER 3: SONG-STUDIO -->
 <div id="songTab" style="display: none;">
     <div class="grid-2">
         <div>
@@ -262,26 +283,7 @@
     <button class="submit-btn" onclick="generateSong()">Song-Material kreieren 🎸</button>
 </div>
     
-    <!-- REITER 3: REIMWÖRTER -->
-    <div id="wordTab" style="display: block;">
-      <div class="form-group">
-        <label>Suchwort</label>
-        <input type="text" id="wordInput" placeholder="z. B. Beat, Sound, Scheinwerferlicht...">
-      </div>
-      <div class="form-group">
-        <label>Thema / Kontext (optional)</label>
-        <input type="text" id="wordTheme" placeholder="z. B. Rockmusik, Liebe, Natur...">
-      </div>
-      <div class="form-group">
-        <label>Sprache</label>
-        <select id="wordLang">
-          <option value="de" selected>Deutsch</option>
-          <option value="en">Englisch</option>
-        </select>
-      </div>
-      <button class="submit-btn" onclick="findRhymes()">Reime filtern 🔍</button>
-    </div>
-    
+   
    
   <div class="results" id="results"></div>
 </div>
