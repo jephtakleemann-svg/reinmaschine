@@ -542,38 +542,37 @@
         const btn = event.target;
         btn.classList.add('active');
 
-        if (type === 'drone') {
-            // TIEFER ANALOG-SYNTH-BASS (Grundfrequenz A1 bei 55 Hz + Quinte E2 bei 82.4 Hz)
+       if (type === 'drone') {
+            // WARME ANALOG-MITTEN (Grundton A2 bei 110 Hz + Quinte E3 bei 164.8 Hz)
             const lowPass = audioCtx.createBiquadFilter();
             lowPass.type = 'lowpass';
-            lowPass.frequency.value = 110; // Alles über 110 Hz wird weich abgeschnitten (kein Scheppern)
-            lowPass.Q.value = 2.5;
+            lowPass.frequency.value = 360; // Seidig weich, nimmt jedes digitale Zischeln weg
+            lowPass.Q.value = 1.2;
 
-            // 1. Langsamer Tremolo-LFO (Atmet alle ~8 Sekunden sanft)
+            // Sanftes, langes Lautstärke-Atmen (alle ~7 Sekunden)
             const tremoloLFO = audioCtx.createOscillator();
-            tremoloLFO.frequency.value = 0.12; 
+            tremoloLFO.frequency.value = 0.14;
             const tremoloGain = audioCtx.createGain();
-            tremoloGain.gain.value = 0.035;
+            tremoloGain.gain.value = 0.02;
 
-            // Master-Gain für angenehme Studio-Lautstärke
             const masterGain = audioCtx.createGain();
-            masterGain.gain.value = 0.08;
+            masterGain.gain.value = 0.07; // Angenehmer, dezenter Hintergrundpegel
 
             tremoloLFO.connect(masterGain.gain);
             tremoloLFO.start();
             activeNodes.push(tremoloLFO);
 
-            // 2. Feines analoges Tape-Drift Vibrato (0.18 Hz LFO auf Tonhöhe)
+            // Zartes analoges Tape-Drift (Vibrato)
             const vibratoLFO = audioCtx.createOscillator();
-            vibratoLFO.frequency.value = 0.18;
+            vibratoLFO.frequency.value = 0.2;
             const vibratoDepth = audioCtx.createGain();
-            vibratoDepth.gain.value = 0.8; // Zartes Schwingen
+            vibratoDepth.gain.value = 0.6;
             vibratoLFO.connect(vibratoDepth);
             vibratoLFO.start();
             activeNodes.push(vibratoLFO);
 
-            // Die Oszillatoren: Subbass (55 Hz), Quinte (82.4 Hz) und warmer Dreieckston
-            [55.0, 55.2, 82.41].forEach((freq, idx) => {
+            // Warme Mitten: 110 Hz (A2), 110.3 Hz (Schwebung), 164.8 Hz (Quinte)
+            [110.0, 110.3, 164.81].forEach((freq, idx) => {
                 const osc = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
                 osc.type = idx === 2 ? 'sine' : 'triangle';
@@ -581,7 +580,7 @@
                 
                 vibratoDepth.connect(osc.frequency);
 
-                g.gain.value = idx === 0 ? 0.6 : 0.35;
+                g.gain.value = idx === 2 ? 0.25 : 0.45;
                 osc.connect(g);
                 g.connect(lowPass);
                 osc.start();
