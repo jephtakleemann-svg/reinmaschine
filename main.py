@@ -11,7 +11,7 @@ API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 ai_client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 # Exakt das von Google geforderte Modell
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.8-flash"
 
 
 def parse_ai_json(raw_text: str):
