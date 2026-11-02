@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reimfabrik – Atelier für Songtexte & Poesie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-sand: #F7F4EB;
+            --bg-card: #FFFFFF;
+            --accent-blue: #4A90E2;
+            --accent-blue-soft: #EBF3FA;
+            --accent-blue-hover: #3A7BC8;
+            --danger-red: #D9534F;
+            --danger-bg: #FDF2F2;
+            --danger-border: #F5C6CB;
+            --text-dark: #2D3139;
+            --text-muted: #70757D;
+            --border: #E8E4DA;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-sand);
+            color: var(--text-dark);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.7;
+            padding: 24px 16px 80px;
+        }
+
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+
+        .manifest-banner {
+            background-color: #FFFDF9;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-blue);
+            padding: 14px 18px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 0.92rem;
+        }
+        .manifest-banner a { color: var(--accent-blue); text-decoration: none; font-weight: 600; margin-left: 6px; }
+        .manifest-banner a:hover { text-decoration: underline; }
+        .close-banner { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .brand h1 { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 500; }
+        .brand p { font-size: 0.88rem; color: var(--text-muted); }
+
+        nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+        nav a:hover { color: var(--accent-blue); }
+
+        .sound-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #EDE8DD;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+        .sound-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        .sound-btn.active {
+            background: var(--accent-blue);
+            color: #fff;
+            border-color: var(--accent-blue);
+        }
+
+        .studio-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 28px;
+        }
+        @media (max-width: 860px) { .studio-grid { grid-template-columns: 1fr; } }
+
+        .pad-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        textarea#pad {
+            width: 100%;
+            height: 440px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: 'Lora', serif;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: var(--text-dark);
+            background: transparent;
+        }
+        textarea#pad::placeholder { color: #A6A29A; font-style: italic; }
+
+        .pad-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .btn-group { display: flex; gap: 8px; }
+        .btn {
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-sand);
+            color: var(--text-dark);
+            transition: all 0.15s;
+        }
+        .btn:hover { background: #EDE8DD; }
+        .btn-primary { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+        .btn-primary:hover { background: var(--accent-blue-hover); }
+        .btn-danger { color: var(--danger-red); border-color: var(--danger-border); background: var(--danger-bg); }
+        .btn-danger:hover { background: #F8D7DA; }
+        .save-indicator { font-size: 0.82rem; color: var(--text-muted); }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .tabs { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            border-radius: 4px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .tab-btn.active { background: var(--accent-blue-soft); color: var(--accent-blue); font-weight: 600; }
+
+        .search-row { display: flex; gap: 8px; margin-bottom: 16px; }
+        .search-row input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.92rem;
+            outline: none;
+        }
+        .search-row input:focus { border-color: var(--accent-blue); }
+
+        .results-box { min-height: 250px; font-size: 0.92rem; }
+        .pill {
+            display: inline-block;
+            background: var(--bg-sand);
+            padding: 4px 10px;
+            border-radius: 14px;
+            margin: 3px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+            transition: all 0.1s;
+        }
+        .pill:hover { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+
+        .suggested-line-card {
+            background: var(--bg-sand);
+            border-left: 3px solid var(--accent-blue);
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        .suggested-line-card:hover { background: #EDE8DD; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal-card {
+            background: #fff;
+            padding: 28px;
+            border-radius: 10px;
+            max-width: 420px;
+            border: 1px solid var(--danger-border);
+            text-align: center;
+        }
+        .modal-card h3 { color: var(--danger-red); margin-bottom: 10px; }
+        .modal-card p { font-size: 0.9rem; color: var(--text-dark); margin-bottom: 20px; }
+        .modal-btns { display: flex; justify-content: center; gap: 10px; }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        footer a { color: var(--text-muted); text-decoration: underline; margin: 0 10px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="manifest-banner" id="secBanner">
+        <div>
+            🔒 <strong>Dein Raum, dein Werk:</strong> Was du hier schreibst, verlässt deinen Browser nicht. Keine Server-Speicherung, kein KI-Training.
+            <a href="/manifest.html">Manifest lesen →</a>
+        </div>
+        <button class="close-banner" onclick="document.getElementById('secBanner').style.display='none'">×</button>
+    </div>
+
+    <header>
+        <div class="brand">
+            <h1>Reimfabrik</h1>
+            <p>Atelier für Wortklang & eigene Songs</p>
+        </div>
+
+        <div class="sound-bar">
+            <span>Fokus-Klang:</span>
+            <button class="sound-btn" onclick="toggleSound('rain')">🌧 Regen</button>
+            <button class="sound-btn" onclick="toggleSound('fire')">🔥 Kamin</button>
+            <button class="sound-btn" onclick="toggleSound('forest')">🌲 Wald</button>
+            <button class="sound-btn" onclick="toggleSound('drone')">🎶 Drone</button>
+        </div>
+
+        <nav>
+            <a href="/handwerk.html">Reimlehre</a>
+            <a href="/knoten-im-kopf.html">Schreibblockade</a>
+            <a href="/manifest.html">Manifest</a>
+        </nav>
+    </header>
+
+    <div class="studio-grid">
+        <div class="pad-container">
+            <textarea id="pad" placeholder="Schreib hier deine ersten Zeilen auf. Lass es fließen..."></textarea>
+            <div class="pad-actions">
+                <span class="save-indicator" id="saveStatus">Lokal gesichert</span>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="copyText()">📋 Kopieren</button>
+                    <button class="btn" onclick="downloadTxt()">💾 .txt Sichern</button>
+                    <button class="btn btn-danger" onclick="confirmReset()">✕ Leeren</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tabs">
+                <button class="tab-btn active" id="tabWord" onclick="switchTab('word')">Wort-Reime</button>
+                <button class="tab-btn" id="tabLine" onclick="switchTab('line')">Zeilen-Kontext</button>
+            </div>
+
+            <div id="wordMode">
+                <div class="search-row">
+                    <input type="text" id="wordInput" placeholder="Wort eingeben (z. B. Stille, Zeit)">
+                    <button class="btn btn-primary" onclick="searchWord()">Finden</button>
+                </div>
+                <div class="results-box" id="wordResults">
+                    <p style="color: #999; font-style: italic;">Tippe ein Wort ein, um reine Reime, weiche Klänge und Silbenketten zu erhalten.</p>
+                </div>
+            </div>
+
+            <div id="lineMode" style="display: none;">
+                <div class="search-row">
+                    <input type="text" id="lineInput" placeholder="Bisherige Zeile eingeben...">
+                    <button class="btn btn-primary" onclick="searchLine()">Inspiration</button>
+                </div>
+                <div class="results-box" id="lineResults">
+                    <p style="color: #999; font-style: italic;">Gib deine Zeile ein. Die KI prüft Rhythmus & Kontext und schlägt passende Wörter sowie Folgezeilen vor.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="resetModal">
+        <div class="modal-card">
+            <h3>Text wirklich verwerfen?</h3>
+            <p>Deine Verse werden unwiderruflich aus dem Zwischenspeicher gelöscht. Hast du sie vorher kopiert?</p>
+            <div class="modal-btns">
+                <button class="btn" onclick="closeModal()">Abbrechen</button>
+                <button class="btn btn-danger" onclick="executeReset()">Ja, Text leeren</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© Reimfabrik · Handwerk für Texter & Songwriter</p>
+        <p style="margin-top: 6px;">
+            <a href="/impressum.html">Impressum</a> | <a href="/datenschutz.html">Datenschutz</a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    const pad = document.getElementById('pad');
+    const saveStatus = document.getElementById('saveStatus');
+
+    if (localStorage.getItem('rf_saved_lyrics')) {
+        pad.value = localStorage.getItem('rf_saved_lyrics');
+    }
+
+    pad.addEventListener('input', () => {
+        localStorage.setItem('rf_saved_lyrics', pad.value);
+        saveStatus.innerText = 'Lokal gesichert';
+    });
+
+    window.addEventListener('beforeunload', (e) => {
+        if (pad.value.trim().length > 10) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    function copyText() {
+        if (!pad.value.trim()) return;
+        navigator.clipboard.writeText(pad.value);
+        saveStatus.innerText = '✓ In Zwischenablage kopiert!';
+        setTimeout(() => saveStatus.innerText = 'Lokal gesichert', 3000);
+    }
+
+    function downloadTxt() {
+        if (!pad.value.trim()) return;
+        const blob = new Blob([pad.value], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'songtext_entwurf.txt';
+        a.click();
+    }
+
+    function confirmReset() { document.getElementById('resetModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('resetModal').style.display = 'none'; }
+    function executeReset() {
+        pad.value = '';
+        localStorage.removeItem('rf_saved_lyrics');
+        closeModal();
+    }
+
+    function switchTab(mode) {
+        document.getElementById('tabWord').classList.toggle('active', mode === 'word');
+        document.getElementById('tabLine').classList.toggle('active', mode === 'line');
+        document.getElementById('wordMode').style.display = mode === 'word' ? 'block' : 'none';
+        document.getElementById('lineMode').style.display = mode === 'line' ? 'block' : 'none';
+    }
+
+    function insertToPad(text) {
+        pad.value += (pad.value.endsWith(' ') || pad.value === '' ? '' : ' ') + text;
+        localStorage.setItem('rf_saved_lyrics', pad.value);
+        pad.focus();
+    }
+
+    async function searchWord() {
+        const val = document.getElementById('wordInput').value.trim();
+        const box = document.getElementById('wordResults');
+        if (!val) return;
+        box.innerHTML = "<p style='color:#777;'>Suche Klänge...</p>";
+
+        try {
+            const res = await fetch(`/api/rhyme?word=${encodeURIComponent(val)}`);
+            const data = await res.json();
+            let html = "";
+            if (data.categories.exact?.length) {
+                html += "<strong>Reine Reime:</strong><br>";
+                data.categories.exact.forEach(w => html += `<span class="pill" onclick="insertToPad('${w}')">${w}</span>`);
+            }
+            if (data.categories.near?.length) {
+                html += "<br><br><strong>Weiche Klangpaare (Slants):</strong><br>";
+                data.categories.near.forEach(w => html += `<span class="pill" onclick="insertToPad('${w}')">${w}</span>`);
+            }
+            if (data.categories.multisyllable?.length) {
+                html += "<br><br><strong>Mehrsilbige Reime:</strong><br>";
+                data.categories.multisyllable.forEach(w => html += `<span class="pill" onclick="insertToPad('${w}')">${w}</span>`);
+            }
+            box.innerHTML = html || "<p>Keine Treffer erhalten.</p>";
+        } catch(e) {
+            box.innerHTML = "<p>Fehler bei der Verbindung.</p>";
+        }
+    }
+
+    async function searchLine() {
+        const val = document.getElementById('lineInput').value.trim();
+        const box = document.getElementById('lineResults');
+        if (!val) return;
+        box.innerHTML = "<p style='color:#777;'>Analysiere Takt & Kontext...</p>";
+
+        try {
+            const res = await fetch(`/api/rhyme-line?line=${encodeURIComponent(val)}`);
+            const data = await res.json();
+            let html = "";
+            if (data.words?.length) {
+                html += "<strong>Passende Wörter zum Kontext:</strong><br>";
+                data.words.forEach(w => html += `<span class="pill" onclick="insertToPad('${w}')">${w}</span>`);
+            }
+            if (data.lines?.length) {
+                html += "<br><br><strong>Impulszeilen (Klicken zum Einfügen):</strong><br>";
+                data.lines.forEach(l => html += `<div class="suggested-line-card" onclick="insertToPad('\\n${l}')">${l}</div>`);
+            }
+            box.innerHTML = html || "<p>Keine Ideen generiert.</p>";
+        } catch(e) {
+            box.innerHTML = "<p>Fehler bei der Verbindung.</p>";
+        }
+    }
+
+    let audioCtx = null;
+    let currentSound = null;
+    let activeNodes = [];
+
+    function stopSounds() {
+        activeNodes.forEach(n => { try { n.stop(); } catch(e){} });
+        activeNodes = [];
+        document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+        currentSound = null;
+    }
+
+    function toggleSound(type) {
+        if (currentSound === type) {
+            stopSounds();
+            return;
+        }
+        stopSounds();
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        currentSound = type;
+        const btn = event.target;
+        btn.classList.add('active');
+
+        if (type === 'drone') {
+            [174, 261.63, 392].forEach(freq => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.value = 0.04;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                activeNodes.push(osc);
+            });
+        } else {
+            const bufferSize = audioCtx.sampleRate * 2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            const gain = audioCtx.createGain();
+
+            if (type === 'rain') {
+                filter.type = 'lowpass';
+                filter.frequency.value = 800;
+                gain.gain.value = 0.08;
+            } else if (type === 'fire') {
+                filter.type = 'bandpass';
+                filter.frequency.value = 400;
+                gain.gain.value = 0.12;
+            } else if (type === 'forest') {
+                filter.type = 'highpass';
+                filter.frequency.value = 1200;
+                gain.gain.value = 0.03;
+            }
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            noise.start();
+            activeNodes.push(noise);
+        }
+    }
+</script>
+</body>
+</html>
