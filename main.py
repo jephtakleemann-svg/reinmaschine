@@ -35,7 +35,7 @@ Kategorien:
 """
     try:
         response = ai_client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.0-flash",
             contents=prompt,
             config={"response_mime_type": "application/json"},
         )
@@ -71,7 +71,7 @@ Gib das Ergebnis ausschließlich als valides JSON in exakt dieser Struktur aus:
 """
     try:
         response = ai_client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.0-flash",
             contents=prompt,
             config={"response_mime_type": "application/json"},
         )
